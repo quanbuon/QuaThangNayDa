@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace QuaThangNayDa
 {
+    /// <summary>Scene adapter for save slots and safe autosave points in the active morning session.</summary>
     [DefaultExecutionOrder(200)]
     public sealed class SaveCoordinator : MonoBehaviour
     {

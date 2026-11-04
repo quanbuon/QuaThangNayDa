@@ -57,6 +57,16 @@ bốn ô độc lập và từ chối ghi autosave khi lượt kết thúc. Khô
 
 ## Chờ nghiệm thu trong bản chạy
 
+### Editor bỏ sót script khi import
+
+Editor đang mở báo CS0246 với SaveCoordinator; response file biên dịch có SaveGame,
+SaveStore nhưng thiếu SaveCoordinator dù file tồn tại và GUID không trùng. Refresh/
+Reimport và cập nhật nội dung chưa giải quyết theo người dùng. Đã chuyển adapter
+SaveCoordinator sang Runtime/Activities, giữ GUID và bổ sung metadata MonoImporter;
+scene SavedMorning vẫn tham chiếu GUID cũ, không thay dữ liệu lưu. Cần khởi động lại
+Editor để xác minh đường dẫn mới được đưa vào danh sách biên dịch. Chưa kết luận
+nguyên nhân sâu của việc AssetDatabase bỏ sót file.
+
 - [ ] Bố cục điện thoại/ô lưu phù hợp màn hình, xác nhận/hủy không bấm nhầm.
 - [ ] Lưu giữa học/làm/cam kết, tải chính xác và tiếp tục được.
 - [ ] Vị trí người chơi/xe, camera, khóa chuột và pause được khôi phục đúng.

@@ -53,6 +53,13 @@ ngắt/nối ca làm không cộng phút nghỉ; chốt lương một lần; gi�
 
 ### Phản hồi tương tác học/làm
 
+Phản hồi tiếp theo: chưa lên xe nhưng thông báo yêu cầu xuống xe. Code xác nhận
+thông báo chung dùng cho cả khoảng cách/raycast thất bại, không chứng minh IsRiding sai.
+Đã tách thông báo đang trên xe, quá xa, mất bảng và bị vật cản; HUD hiển thị trạng thái
+đi bộ/trên xe. Khi xác nhận dùng lại điểm bề mặt mà phím F đã chọn, thay vì bắn tia
+mới tới tâm bảng. Vẫn kiểm tra khoảng cách, vật cản và trạng thái xe, không bỏ điều kiện.
+Chờ người dùng xác minh tương tác; chưa xác nhận lỗi trạng thái lên xe.
+
 Người dùng báo ăn sáng được nhưng học/làm không thấy phản hồi. Chưa biết giờ game
 hoặc bảng có nhận raycast trong lần đó. Kiểm tra code xác nhận học/làm bị khóa ngoài
 khung lịch, còn thông báo lỗi nằm thấp trong vùng cuộn.

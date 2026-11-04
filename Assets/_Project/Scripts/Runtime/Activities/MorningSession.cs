@@ -15,6 +15,7 @@ namespace QuaThangNayDa
         private ActivityStation _target, _selected;
         private string _message = "";
         private Vector2 _scroll;
+        private Vector3 _targetHitPoint, _selectedLocalPoint;
 
         private void Start()
         {
@@ -28,13 +29,20 @@ namespace QuaThangNayDa
             _target = null;
             if (!Player.IsRiding && Physics.Raycast(Player.View.transform.position, Player.View.transform.forward,
                 out RaycastHit hit, 3f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            {
                 _target = hit.collider.GetComponent<ActivityStation>();
+                _targetHitPoint = hit.point;
+            }
             var keyboard = Keyboard.current;
             if (_started && !Player.IsPaused && keyboard != null)
             {
                 if (keyboard.tabKey.wasPressedThisFrame) { _panel = !_panel; _selected = null; _scroll = Vector2.zero; _message = ""; }
                 if (!_panel && Simulation.Activity == MorningActivity.None && _target != null && keyboard.fKey.wasPressedThisFrame)
-                { _selected = _target; _panel = true; _scroll = Vector2.zero; _message = ""; }
+                {
+                    _selected = _target;
+                    _selectedLocalPoint = _selected.transform.InverseTransformPoint(_targetHitPoint);
+                    _panel = true; _scroll = Vector2.zero; _message = "";
+                }
                 else if (!_panel && keyboard.fKey.wasPressedThisFrame)
                     _message = Player.IsRiding ? "Can xuong xe (E) truoc khi tuong tac."
                         : Simulation.Activity != MorningActivity.None ? "Dang hoat dong. Bam Tab de xem/dung hoat dong."
@@ -58,13 +66,24 @@ namespace QuaThangNayDa
             Player.OverlayOpen = _panel || !_started || Simulation.Ended;
             Player.ControlsBlocked = Player.OverlayOpen || Simulation.Activity != MorningActivity.None;
         }
-        private bool CanUseSelected()
+        private bool CanUseSelected(out string reason)
         {
-            if (_selected == null || Player.IsRiding) return false;
+            reason = "";
+            if (Player.IsRiding)
+            { reason = "Ban dang ngoi tren xe. Dong bang va bam E de xuong xe."; return false; }
+            if (_selected == null)
+            { reason = "Chua chon bang hoat dong. Dong bang, nhin bang va bam F."; return false; }
             Vector3 origin = Player.View.transform.position;
-            Vector3 direction = _selected.transform.position - origin;
-            return direction.magnitude <= 3.5f && Physics.Raycast(origin, direction.normalized, out RaycastHit hit, 3.5f)
-                && hit.collider.GetComponent<ActivityStation>() == _selected;
+            // Recheck the visible point accepted by F, not a different ray to the object's centre.
+            Vector3 direction = _selected.transform.TransformPoint(_selectedLocalPoint) - origin;
+            if (direction.magnitude > 3.5f)
+            { reason = "Ban dung qua xa bang. Dong bang va tien lai gan duoi 3m."; return false; }
+            if (direction.sqrMagnitude < 0.0001f || !Physics.Raycast(origin, direction.normalized,
+                out RaycastHit hit, direction.magnitude + 0.1f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+            { reason = "Khong con thay bang da chon. Dong bang, lui mot chut va bam F lai."; return false; }
+            if (hit.collider.GetComponent<ActivityStation>() != _selected)
+            { reason = "Co vat can truoc bang. Dong bang va chon vi tri nhin ro hon."; return false; }
+            return true;
         }
         private static string Clock(int minute) => $"{minute / 60:00}:{minute % 60:00}";
         private void OnGUI()
@@ -76,7 +95,7 @@ namespace QuaThangNayDa
             GUILayout.BeginArea(new Rect(12, 12, width, 90), GUI.skin.box);
             GUILayout.Label($"M2 | {Clock(sim.Minute)} | {(sim.Paused ? "DUNG GIO" : "GIO DANG CHAY")} | Tab: lich/nhat ky | Esc: tam dung");
             GUILayout.Label($"Tien {sim.Money:N0}d | Suc khoe {sim.Health:0} | Nang luong {sim.Energy:0} | Hoc tap {sim.Learning:0} | Quan he {sim.Relations:0}");
-            GUILayout.Label($"{sim.Activity} | Hoc {sim.ClassMinutes} phut | Lam {sim.WorkMinutes} phut | WASD/chuot/E/Space/R nhu M1");
+            GUILayout.Label($"{(Player.IsRiding ? "DANG TREN XE" : "DANG DI BO")} | {sim.Activity} | Hoc {sim.ClassMinutes} phut | Lam {sim.WorkMinutes} phut");
             GUILayout.EndArea();
             if (!_panel && _started && !sim.Ended)
             {
@@ -119,7 +138,7 @@ namespace QuaThangNayDa
                     GUI.enabled = !Player.IsPaused && eligible;
                     if (GUILayout.Button(eligible ? "XAC NHAN BAT DAU" : "CHUA THE BAT DAU - xem thong bao o tren"))
                     {
-                        if (!CanUseSelected()) _message = "Can xuong xe va dung sat bang hoat dong.";
+                        if (!CanUseSelected(out string interactionReason)) _message = interactionReason;
                         else if (sim.Start(_selected.Activity, out _message))
                         { _minuteFraction = 0; _message = "DA BAT DAU: " + _selected.Label + ". So phut se tang; co the bam THUC HIEN TIEP."; }
                     }

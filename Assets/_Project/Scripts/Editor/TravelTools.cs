@@ -23,6 +23,9 @@ namespace QuaThangNayDa.Editor
         public static void BuildBatch()
         {
             Create();
+            ScooterPhysicsCheck.RunBatch();
+            // Discard the diagnostic simulation; build the saved, unmodified scene.
+            EditorSceneManager.OpenScene(ScenePath);
             string[] args = Environment.GetCommandLineArgs();
             int index = Array.IndexOf(args, "-m1-build-output");
             if (index < 0 || index + 1 >= args.Length) throw new ArgumentException("Missing -m1-build-output");

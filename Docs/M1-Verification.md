@@ -30,7 +30,22 @@ và standalone; chưa đo hiệu năng gameplay hoặc khẳng định đạt m�
 Build nằm ở `Build/Windows-M1/QuaThangNayDa-M1.exe`; log cục bộ:
 `Logs/M1/build-20261104-151612.log`. Chưa xác minh hình ảnh hoặc cảm giác lái M1.
 
-## Tổ chức
+## Sửa lỗi xe không chạy
+
+Người dùng đã xác nhận đi bộ và lên xe được nhưng xe không chạy.
+Phép thử vật lý trên chính TravelTest tái hiện: ga 3 giây chỉ đạt 0,003 km/h,
+dịch chuyển khoảng -0,002 m. Collider thân xe dùng ma sát mặc định, triệt tiêu gia tốc.
+Đã gán PhysicsMaterial không ma sát cho thân xe tại Awake; bộ điều khiển vẫn xử lý
+độ bám ngang, trôi tự do và phanh, không bỏ va chạm.
+
+Sau sửa: đi 16,965 m trong 3 giây, đạt 32,4 km/h; phanh 1,5 giây về 0 km/h.
+Log cục bộ: `Logs/M1/scooter-before.log`, `Logs/M1/scooter-after.log`.
+ScooterPhysicsCheck dùng Physics.Simulate trên scene thật trong project validation;
+không kiểm tra bàn phím/camera hoặc thay thế chơi thử. BuildBatch chạy phép thử trước build,
+sau đó nạp lại scene đã lưu để không đóng gói trạng thái xe sau phép thử.
+Không cần tạo lại scene hiện có; thoát Play và chờ Unity compile rồi chơi lại.
+
+## Thành phần
 
 - TravelInput: Input System actions, tách binding khỏi logic di chuyển.
 - TravelController: CharacterController, camera góc nhìn thứ nhất và chuyển trạng thái lên/xuống xe.

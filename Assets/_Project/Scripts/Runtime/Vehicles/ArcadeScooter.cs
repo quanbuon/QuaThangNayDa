@@ -16,6 +16,7 @@ namespace QuaThangNayDa
         private bool _brake;
         private Vector3 _safePosition;
         private Quaternion _safeRotation;
+        private PhysicsMaterial _contactMaterial;
 
         private void Awake()
         {
@@ -24,10 +25,29 @@ namespace QuaThangNayDa
             _body.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             _body.interpolation = RigidbodyInterpolation.Interpolate;
             _body.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            // This arcade body slides on the floor instead of rolling on wheel colliders.
+            // Default static friction cancels the 4 m/s² acceleration every physics step.
+            // Grip, coasting and braking are controlled explicitly in FixedUpdate instead.
+            _contactMaterial = new PhysicsMaterial("Scooter arcade contact")
+            {
+                staticFriction = 0,
+                dynamicFriction = 0,
+                frictionCombine = PhysicsMaterialCombine.Minimum,
+                bounciness = 0,
+                bounceCombine = PhysicsMaterialCombine.Minimum
+            };
+            GetComponent<BoxCollider>().sharedMaterial = _contactMaterial;
             _safePosition = SafeSpot != null ? SafeSpot.position : transform.position;
             _safeRotation = SafeSpot != null ? SafeSpot.rotation : transform.rotation;
         }
         public void SetInput(Vector2 drive, bool brake) { _drive = drive; _brake = brake; }
+
+        private void OnDestroy()
+        {
+            if (_contactMaterial == null) return;
+            if (Application.isPlaying) Destroy(_contactMaterial);
+            else DestroyImmediate(_contactMaterial);
+        }
 
         private void FixedUpdate()
         {

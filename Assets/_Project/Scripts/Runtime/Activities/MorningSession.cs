@@ -10,6 +10,9 @@ namespace QuaThangNayDa
         public MorningConfig Config;
         public TravelController Player;
         public StudentPhone Phone;
+        public SaveCoordinator Saves;
+        public bool HasStarted => _started;
+        private float _secondsPerMinute;
         public MorningSimulation Simulation { get; private set; }
         private bool _started, _panel = true;
         private float _minuteFraction;
@@ -21,6 +24,7 @@ namespace QuaThangNayDa
         private void Start()
         {
             Simulation = new MorningSimulation(Config.Rules, Config.EnableStory);
+            _secondsPerMinute = Config.RealSecondsPerMinute;
             Player.ShowDiagnostics = false;
             SyncControls();
         }
@@ -52,12 +56,13 @@ namespace QuaThangNayDa
             Simulation.Paused = !_started || Player.IsPaused;
             if (!Simulation.Paused && !Simulation.StoryPending && !Simulation.Ended)
             {
-                _minuteFraction += Time.deltaTime / Mathf.Max(0.1f, Config.RealSecondsPerMinute);
+                _minuteFraction += Time.deltaTime / Mathf.Max(0.1f, _secondsPerMinute);
                 while (_minuteFraction >= 1 && !Simulation.StoryPending && !Simulation.Ended)
                 {
                     _minuteFraction -= 1;
                     Simulation.Advance(1);
                 }
+                if (Simulation.StoryPending) _minuteFraction = 0;
             }
             SyncControls();
         }
@@ -88,6 +93,27 @@ namespace QuaThangNayDa
         }
         private static string Clock(int minute) => $"{minute / 60:00}:{minute % 60:00}";
         public void CloseActivityPanel() { _panel = false; _selected = null; SyncControls(); }
+        public SaveGame CaptureSave()
+        {
+            return new SaveGame { SavedUtc = System.DateTime.UtcNow.ToString("O"), Simulation = Simulation.Capture(),
+                Travel = Player.CaptureTravel(), Started = _started, MinuteFraction = _minuteFraction,
+                RealSecondsPerMinute = _secondsPerMinute, ReadMessages = Phone != null ? Phone.ReadMessages : 0 };
+        }
+        public void RestoreSave(SaveGame data)
+        {
+            data.Validate();
+            var restored = MorningSimulation.Restore(data.Simulation);
+            Player.RestoreTravel(data.Travel);
+            Simulation = restored;
+            Simulation.Paused = true;
+            _started = data.Started;
+            _minuteFraction = data.MinuteFraction;
+            _secondsPerMinute = data.RealSecondsPerMinute;
+            _selected = _target = null;
+            _panel = true; _scroll = Vector2.zero; _message = "Da tai. Esc/Tiep tuc de choi; khong tinh thoi gian ngoai doi.";
+            if (Phone != null) Phone.RestoreMessages(data.ReadMessages);
+            SyncControls();
+        }
         private void OnGUI()
         {
             if (Simulation == null) return;
@@ -95,7 +121,7 @@ namespace QuaThangNayDa
             var rules = sim.Rules;
             float width = Mathf.Min(680, Screen.width - 24);
             GUILayout.BeginArea(new Rect(12, 12, width, 90), GUI.skin.box);
-            GUILayout.Label($"{(Config.EnableStory ? "M3" : "M2")} | {Clock(sim.Minute)} | {(sim.Paused || sim.StoryPending ? "DUNG GIO" : "GIO DANG CHAY")} | P: dien thoai | Tab: lich | Esc: tam dung");
+            GUILayout.Label($"{(Saves != null ? "M4" : Config.EnableStory ? "M3" : "M2")} | {Clock(sim.Minute)} | {(sim.Paused || sim.StoryPending ? "DUNG GIO" : "GIO DANG CHAY")} | P: dien thoai | Tab: lich | Esc: tam dung");
             GUILayout.Label($"Tien {sim.Money:N0}d | Suc khoe {sim.Health:0} | Nang luong {sim.Energy:0} | Hoc tap {sim.Learning:0} | Quan he {sim.Relations:0}");
             GUILayout.Label($"{(Player.IsRiding ? "DANG TREN XE" : "DANG DI BO")} | {sim.Activity} | Hoc {sim.ClassMinutes} phut | Lam {sim.WorkMinutes} phut");
             GUILayout.EndArea();
@@ -120,7 +146,7 @@ namespace QuaThangNayDa
             GUI.enabled = !Player.IsPaused && !sim.StoryPending;
             if (!_started)
             {
-                GUILayout.Label("HUONG DAN AN TOAN: dong ho chua chay. P mo dien thoai. Ban thu chua co luu game.");
+                GUILayout.Label("HUONG DAN AN TOAN: dong ho chua chay. P mo dien thoai." + (Saves != null ? " Luu/tai trong dien thoai." : " Ban thu chua co luu game."));
                 GUILayout.Label("Thuc day luc 07:00; an sang o bang gan xe, di hoc ben trai, lam o ca phe ben phai.");
                 GUILayout.Label("Can di bo toi bang, nhin bang va bam F. Panel thuong VAN CHAY GIO. Esc de tam dung.");
                 if (GUILayout.Button("THUC DAY - BAT DAU BUOI SANG")) { _started = true; _panel = false; sim.Paused = false; }
@@ -150,7 +176,7 @@ namespace QuaThangNayDa
                 }
                 if (GUILayout.Button("DONG BANG (Tab)")) { _panel = false; _selected = null; }
             }
-            if (sim.Ended) GUILayout.Label("TONG KET BUOI SANG M2 - xem tung khoan ben duoi. Choi lai bang Stop/Play; chua co luu game.");
+            if (sim.Ended) GUILayout.Label("TONG KET BUOI SANG - xem tung khoan ben duoi. Stop/Play de choi lai; P mo dien thoai de tai neu co ban luu.");
             foreach (string line in sim.Journal) GUILayout.Label(line);
             GUI.enabled = true;
             GUILayout.EndScrollView();

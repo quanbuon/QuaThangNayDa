@@ -6,6 +6,21 @@ namespace QuaThangNayDa.Core
     // Tracks only work performed AFTER accepting. Schedule settlement remains independent.
     public sealed class ShiftCommitment
     {
+        internal static ShiftCommitment Restore(MorningSnapshot data)
+        {
+            bool chosen = data.CommitmentChoice != CommitmentChoice.None;
+            bool settledOrActive = data.CommitmentState == CommitmentState.Active || data.CommitmentState == CommitmentState.Completed || data.CommitmentState == CommitmentState.Failed;
+            if (!System.Enum.IsDefined(typeof(CommitmentState), data.CommitmentState) ||
+                !System.Enum.IsDefined(typeof(CommitmentChoice), data.CommitmentChoice) ||
+                chosen != settledOrActive || data.CommitmentProgress < 0 || data.CommitmentProgress > 20 ||
+                (!chosen && (data.CommitmentProgress != 0 || data.CommitmentDeadline != 0)) ||
+                (chosen && (data.CommitmentDeadline <= data.Rules.StartMinute || data.CommitmentDeadline > data.Rules.EndMinute)) ||
+                (data.CommitmentState == CommitmentState.Completed && data.CommitmentProgress != 20) ||
+                (data.CommitmentState == CommitmentState.Active && (data.CommitmentProgress >= 20 || data.CommitmentDeadline <= data.Minute)))
+                throw new System.ArgumentException("Invalid commitment snapshot.");
+            return new ShiftCommitment { State = data.CommitmentState, Choice = data.CommitmentChoice,
+                Progress = data.CommitmentProgress, Deadline = data.CommitmentDeadline };
+        }
         public CommitmentState State { get; private set; }
         public CommitmentChoice Choice { get; private set; }
         public int Progress { get; private set; }

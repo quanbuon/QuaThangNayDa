@@ -149,6 +149,28 @@ namespace QuaThangNayDa
             Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = paused;
         }
+        public TravelSnapshot CaptureTravel()
+        {
+            var data = new TravelSnapshot { Position = transform.position, Yaw = _yaw, Pitch = _pitch,
+                VerticalSpeed = _verticalSpeed, Riding = _riding };
+            Scooter.CaptureInto(data);
+            return data;
+        }
+        public void RestoreTravel(TravelSnapshot data)
+        {
+            SetPaused(true); // Loading never lets the world run before the player is ready.
+            _controller.enabled = false;
+            Scooter.RestoreFrom(data);
+            transform.SetPositionAndRotation(data.Position, Quaternion.Euler(0, data.Yaw, 0));
+            _riding = data.Riding;
+            _yaw = data.Yaw; _pitch = data.Pitch; _verticalSpeed = data.VerticalSpeed;
+            _transitionRemaining = 0;
+            _message = "";
+            _controller.enabled = !_riding;
+            Physics.SyncTransforms();
+            GetViewTarget(out Vector3 position, out Quaternion rotation);
+            View.transform.SetPositionAndRotation(position, rotation);
+        }
         private void OnApplicationFocus(bool focus) { if (!focus) SetPaused(true); }
         private void OnDisable() { Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         private void OnGUI()

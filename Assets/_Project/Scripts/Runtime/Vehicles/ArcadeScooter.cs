@@ -88,5 +88,28 @@ namespace QuaThangNayDa
             _body.position = _safePosition;
             _body.rotation = _safeRotation;
         }
+
+        public void CaptureInto(TravelSnapshot data)
+        {
+            data.ScooterPosition = _body.position;
+            data.ScooterRotation = _body.rotation;
+            data.ScooterVelocity = _body.linearVelocity;
+            data.ScooterAngularVelocity = _body.angularVelocity;
+            data.CollisionCount = CollisionCount;
+            data.CollisionCooldown = Mathf.Clamp(2 - (Time.time - LastImpactTime), 0, 2);
+        }
+        public void RestoreFrom(TravelSnapshot data)
+        {
+            _body.position = data.ScooterPosition;
+            _body.rotation = data.ScooterRotation;
+            transform.SetPositionAndRotation(data.ScooterPosition, data.ScooterRotation);
+            _body.linearVelocity = data.ScooterVelocity;
+            _body.angularVelocity = data.ScooterAngularVelocity;
+            CollisionCount = data.CollisionCount;
+            LastImpactTime = Time.time - (2 - data.CollisionCooldown);
+            Mounted = data.Riding;
+            _drive = Vector2.zero;
+            _brake = false;
+        }
     }
 }

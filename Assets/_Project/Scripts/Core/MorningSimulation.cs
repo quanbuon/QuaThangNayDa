@@ -43,8 +43,58 @@ namespace QuaThangNayDa.Core
         public bool Ended => Minute >= _rules.EndMinute || Health <= 0 || Energy <= 0;
         public IReadOnlyList<string> Journal => _journal;
         public MorningRules Rules => _rules.Copy(); // Session schedule cannot be edited through the config.
-        public ShiftCommitment Commitment { get; }
+        public ShiftCommitment Commitment { get; private set; }
         public bool StoryPending => Commitment != null && Commitment.NeedsChoice;
+
+        public MorningSnapshot Capture()
+        {
+            return new MorningSnapshot
+            {
+                Rules = _rules.Copy(), Minute = Minute, Money = Money, Health = Health, Energy = Energy,
+                Learning = Learning, Relations = Relations, ClassMinutes = ClassMinutes, WorkMinutes = WorkMinutes,
+                Activity = Activity, Remaining = _remaining, ClassSettled = _classSettled, WorkSettled = _workSettled,
+                StoryEnabled = Commitment != null, CommitmentState = Commitment?.State ?? CommitmentState.NotOffered,
+                CommitmentChoice = Commitment?.Choice ?? CommitmentChoice.None,
+                CommitmentProgress = Commitment?.Progress ?? 0, CommitmentDeadline = Commitment?.Deadline ?? 0,
+                Journal = _journal.ToArray()
+            };
+        }
+
+        public static MorningSimulation Restore(MorningSnapshot data)
+        {
+            if (data == null || data.Rules == null) throw new ArgumentException("Missing simulation snapshot.");
+            data.Rules.Validate();
+            bool ValidStat(double value) => !double.IsNaN(value) && !double.IsInfinity(value) && value >= 0 && value <= 100;
+            if (data.Minute < data.Rules.StartMinute || data.Minute > data.Rules.EndMinute || data.Money < 0 ||
+                !ValidStat(data.Health) || !ValidStat(data.Energy) || !ValidStat(data.Learning) || !ValidStat(data.Relations) ||
+                !Enum.IsDefined(typeof(MorningActivity), data.Activity) ||
+                data.ClassMinutes < 0 || data.ClassMinutes > Math.Max(0, Math.Min(data.Minute, data.Rules.ClassEnd) - data.Rules.ClassStart) ||
+                data.WorkMinutes < 0 || data.WorkMinutes > Math.Max(0, Math.Min(data.Minute, data.Rules.WorkEnd) - data.Rules.WorkStart) ||
+                data.ClassSettled != (data.Minute >= data.Rules.ClassEnd) || data.WorkSettled != (data.Minute >= data.Rules.WorkEnd) ||
+                data.Journal == null || data.Journal.Length > 10000 ||
+                (data.Activity == MorningActivity.Study && (data.Minute < data.Rules.ClassStart || data.Minute >= data.Rules.ClassEnd)) ||
+                (data.Activity == MorningActivity.Work && (data.Minute < data.Rules.WorkStart || data.Minute >= data.Rules.WorkEnd)) ||
+                (data.Activity == MorningActivity.Breakfast && (data.Remaining <= 0 || data.Remaining > data.Rules.BreakfastMinutes)) ||
+                (data.Activity == MorningActivity.Rest && (data.Remaining <= 0 || data.Remaining > data.Rules.RestMinutes)))
+                throw new ArgumentException("Invalid simulation snapshot.");
+            var sim = new MorningSimulation(data.Rules, data.StoryEnabled)
+            {
+                Minute = data.Minute, Money = data.Money, Health = data.Health, Energy = data.Energy,
+                Learning = data.Learning, Relations = data.Relations, ClassMinutes = data.ClassMinutes, WorkMinutes = data.WorkMinutes,
+                Activity = data.Activity, _remaining = data.Remaining, _classSettled = data.ClassSettled, _workSettled = data.WorkSettled,
+                Commitment = data.StoryEnabled ? ShiftCommitment.Restore(data) : null
+            };
+            if (sim.Activity == MorningActivity.CoverShift && (sim.Commitment == null || !sim.Commitment.Active || sim.Commitment.Choice != CommitmentChoice.CoverShift))
+                throw new ArgumentException("Cover shift without active commitment.");
+            if (sim.Ended && sim.Activity != MorningActivity.None) throw new ArgumentException("Ended snapshot has active activity.");
+            sim._journal.Clear();
+            foreach (string line in data.Journal)
+            {
+                if (line == null || line.Length > 4096) throw new ArgumentException("Invalid journal entry.");
+                sim._journal.Add(line);
+            }
+            return sim;
+        }
 
         public MorningSimulation(MorningRules rules, bool enableStory = false)
         {

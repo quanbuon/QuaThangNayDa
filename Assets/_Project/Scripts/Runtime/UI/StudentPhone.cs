@@ -14,6 +14,15 @@ namespace QuaThangNayDa
         private float _toastUntil;
         private Vector2 _scroll;
         private GUIStyle _wrapped;
+        public int ReadMessages => _readCount;
+        public void RestoreMessages(int count)
+        {
+            _readCount = count;
+            _knownCount = Session.Simulation.Journal.Count;
+            _scroll = Vector2.zero;
+            _toastUntil = 0;
+            IsOpen = false;
+        }
 
         private void Update()
         {
@@ -61,6 +70,13 @@ namespace QuaThangNayDa
             GUI.enabled = !Session.Player.IsPaused;
             if (!sim.StoryPending && GUILayout.Button("DONG DIEN THOAI (P)")) IsOpen = false;
             _scroll = GUILayout.BeginScrollView(_scroll);
+            if (Session.Saves != null)
+            {
+                GUI.enabled = true; // Save/load remains available while paused or at game over.
+                if (Session.Saves.DrawControls())
+                { GUILayout.EndScrollView(); GUILayout.EndArea(); return; }
+                GUI.enabled = !Session.Player.IsPaused;
+            }
             if (sim.StoryPending)
             {
                 GUILayout.Label("QUAN LY CA PHE\nQuan dang thieu nguoi. Em co the sang lam thay 20 phut khong?", _wrapped);

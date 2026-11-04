@@ -22,7 +22,14 @@ Không sử dụng model từ ZIP tham khảo khi chưa kiểm tra nguồn và q
 Nền/cube chỉ dùng kiểm tra render, không phải cảnh chính thức. SampleScene được giữ nguyên.
 M0 dùng IMGUI cho bảng chẩn đoán; HUD gameplay về sau dùng uGUI/TextMeshPro.
 
-## Điện thoại và tình huống M3
+## Lưu/tải M4
+
+Chọn **Qua Thang Nay Da → M4 → Create or Open Saved Morning**, rồi Play.
+P mở điện thoại → chọn ô Lưu/Tải → Xác nhận. Tải xong game tạm dừng; Esc để tiếp tục.
+Xem [hướng dẫn và kiểm chứng M4](Docs/M4-Verification.md). Có autosave và ba ô thủ công,
+bản dự phòng; không có cloud/tài khoản. Chờ chơi thử UI và khôi phục trong scene.
+
+## Điện thoại và tình huống M3 (không lưu)
 
 Chọn **Qua Thang Nay Da → M3 → Create or Open Phone Story** ngoài Play Mode.
 **P** mở điện thoại, tin quản lý xuất hiện sau 10 phút học nếu tới lớp đủ sớm.

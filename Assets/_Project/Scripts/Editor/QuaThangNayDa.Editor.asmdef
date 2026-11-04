@@ -1,0 +1,6 @@
+{
+  "name": "QuaThangNayDa.Editor",
+  "rootNamespace": "QuaThangNayDa.Editor",
+  "references": ["QuaThangNayDa.Runtime"],
+  "includePlatforms": ["Editor"]
+}

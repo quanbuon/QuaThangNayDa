@@ -1,0 +1,5 @@
+{
+  "name": "QuaThangNayDa.Runtime",
+  "rootNamespace": "QuaThangNayDa",
+  "references": ["QuaThangNayDa.Core"]
+}

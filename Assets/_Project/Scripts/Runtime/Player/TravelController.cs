@@ -13,6 +13,12 @@ namespace QuaThangNayDa
         private float _yaw, _pitch, _verticalSpeed;
         private Vector3 _spawn;
         private string _message = "";
+        private float _transitionRemaining;
+        private Vector3 _transitionPositionOffset;
+        private Quaternion _transitionRotationOffset = Quaternion.identity;
+        private float _frameWindow, _worstFrame, _displayWorstFrame, _displayFps;
+        private int _frameCount;
+        private const float TransitionDuration = 0.25f;
 
         private void Awake()
         {
@@ -25,6 +31,16 @@ namespace QuaThangNayDa
         }
         private void Update()
         {
+            _frameWindow += Time.unscaledDeltaTime;
+            _worstFrame = Mathf.Max(_worstFrame, Time.unscaledDeltaTime);
+            _frameCount++;
+            if (_frameWindow >= 0.5f)
+            {
+                _displayFps = _frameCount / _frameWindow;
+                _displayWorstFrame = _worstFrame * 1000;
+                _frameWindow = _worstFrame = 0;
+                _frameCount = 0;
+            }
             if (_input.Pause) SetPaused(!_paused);
             if (_paused) return;
             Vector2 look = _input.Look * 0.09f;
@@ -36,6 +52,7 @@ namespace QuaThangNayDa
                 if (_riding) Scooter.Recover();
                 else { _controller.enabled = false; transform.position = _spawn; _controller.enabled = true; }
                 _message = "Da dua ve diem an toan cua khu thu.";
+                _transitionRemaining = 0;
             }
             if (_riding) Scooter.SetInput(_input.Move, _input.Brake);
             else
@@ -52,12 +69,23 @@ namespace QuaThangNayDa
 
         private void LateUpdate()
         {
-            Vector3 position = _riding ? Scooter.Seat.position : transform.position + Vector3.up * 1.65f;
+            if (_paused) return;
+            GetViewTarget(out Vector3 position, out Quaternion rotation);
+            _transitionRemaining = Mathf.Max(0, _transitionRemaining - Time.deltaTime);
+            float remaining = _transitionRemaining / TransitionDuration;
+            float weight = remaining * remaining * (3 - 2 * remaining);
+            // Follow the rendered/interpolated seat exactly. Smooth only the mount transition,
+            // not every mouse movement and every frame of vehicle travel.
+            View.transform.SetPositionAndRotation(position + _transitionPositionOffset * weight,
+                rotation * Quaternion.Slerp(Quaternion.identity, _transitionRotationOffset, weight));
+        }
+
+        private void GetViewTarget(out Vector3 position, out Quaternion rotation)
+        {
+            position = _riding ? Scooter.Seat.position : transform.position + Vector3.up * 1.65f;
             float yaw = _riding ? Scooter.transform.eulerAngles.y + Mathf.Clamp(_yaw, -85, 85) : _yaw;
             if (_riding) _yaw = Mathf.Clamp(_yaw, -85, 85);
-            float blend = 1 - Mathf.Exp(-16 * Time.unscaledDeltaTime);
-            View.transform.position = Vector3.Lerp(View.transform.position, position, blend);
-            View.transform.rotation = Quaternion.Slerp(View.transform.rotation, Quaternion.Euler(_pitch, yaw, 0), blend);
+            rotation = Quaternion.Euler(_pitch, yaw, 0);
         }
 
         private void ToggleRide()
@@ -97,6 +125,10 @@ namespace QuaThangNayDa
                 Scooter.SetInput(Vector2.zero, true);
             }
             _message = "";
+            GetViewTarget(out Vector3 targetPosition, out Quaternion targetRotation);
+            _transitionPositionOffset = View.transform.position - targetPosition;
+            _transitionRotationOffset = Quaternion.Inverse(targetRotation) * View.transform.rotation;
+            _transitionRemaining = TransitionDuration;
         }
 
         private void SetPaused(bool paused)
@@ -110,10 +142,11 @@ namespace QuaThangNayDa
         private void OnDisable() { Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         private void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(16, 16, 550, 200), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(16, 16, 550, 225), GUI.skin.box);
             GUILayout.Label("M1 / KHU THU DIEU KHIEN - CHUA PHAI MY THUAT CHINH THUC");
             GUILayout.Label("WASD: di/lai | Chuot: nhin | E: len/xuong xe | Space: phanh");
             GUILayout.Label("R: ve diem an toan | Esc: tam dung / tha chuot");
+            GUILayout.Label($"FPS: {_displayFps:0} | Khung cham nhat (0.5s): {_displayWorstFrame:0.0} ms");
             GUILayout.Label(_riding ? $"Dang lai: {Scooter.SpeedKph:0} km/h" : "Dang di bo - den gan xe va bam E");
             GUILayout.Label($"Va cham du nguong: {Scooter.CollisionCount} (cach nhau it nhat 2 giay)");
             if (Time.time - Scooter.LastImpactTime < 0.8f) GUILayout.Label("VA CHAM - GIAM TOC!");

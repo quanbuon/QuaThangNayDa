@@ -54,12 +54,15 @@ namespace QuaThangNayDa
             if (!Physics.Raycast(_body.position + Vector3.up * 0.1f, Vector3.down, 0.9f,
                 Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) return;
             Vector3 velocity = _body.linearVelocity;
-            float forward = Vector3.Dot(velocity, transform.forward);
+            // Physics uses the current simulation pose, not the interpolated render Transform.
+            Vector3 forwardAxis = _body.rotation * Vector3.forward;
+            Vector3 rightAxis = _body.rotation * Vector3.right;
+            float forward = Vector3.Dot(velocity, forwardAxis);
             float target = Mounted && !_brake ? _drive.y * (_drive.y >= 0 ? 9f : 2f) : 0;
             float acceleration = _brake || !Mounted ? 12 : Mathf.Abs(_drive.y) < 0.01f ? 2 : 4;
             forward = Mathf.MoveTowards(forward, target, acceleration * Time.fixedDeltaTime);
-            Vector3 lateral = Vector3.Project(velocity, transform.right);
-            _body.linearVelocity = transform.forward * forward + lateral * 0.75f + Vector3.up * velocity.y;
+            Vector3 lateral = Vector3.Project(velocity, rightAxis);
+            _body.linearVelocity = forwardAxis * forward + lateral * 0.75f + Vector3.up * velocity.y;
             float turn = Mounted ? _drive.x * Mathf.Clamp(forward / 3, -1, 1) * 65 : 0;
             // At high speed the wider turning radius encourages braking before corners.
             _body.MoveRotation(_body.rotation * Quaternion.Euler(0, turn * Time.fixedDeltaTime, 0));

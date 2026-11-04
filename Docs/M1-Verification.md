@@ -45,7 +45,21 @@ không kiểm tra bàn phím/camera hoặc thay thế chơi thử. BuildBatch ch
 sau đó nạp lại scene đã lưu để không đóng gói trạng thái xe sau phép thử.
 Không cần tạo lại scene hiện có; thoát Play và chờ Unity compile rồi chơi lại.
 
-## Thành phần
+## Điều tra giật khi di chuyển
+
+Người dùng xác nhận xe chạy sau sửa ma sát nhưng còn thấy giật. Chưa biết chỉ xảy ra
+khi đi bộ/lái xe/xoay chuột, hoặc trong Editor hay standalone; chưa có capture profiler.
+Đã bỏ camera đuổi theo bằng Lerp/Slerp liên tục, chỉ blend offset trong 0,25 giây khi
+lên/xuống xe. Khi chạy bình thường camera bám trực tiếp vị trí ghế đã được Rigidbody
+nội suy; hướng nhìn chuột không có lớp smoothing phụ. Khi pause camera đứng yên.
+FixedUpdate dùng hướng từ Rigidbody.rotation, không dùng Transform dành cho render.
+Không đổi fixed timestep, chất lượng đồ họa hoặc vSync để tránh thay nhiều biến cùng lúc.
+
+HUD bổ sung FPS trung bình và thời gian khung chậm nhất trong cửa sổ 0,5 giây.
+Đây là số đo chẩn đoán thô, không thay thế profiler và chưa chứng minh hết giật.
+Cần thử đi thẳng, xoay chuột đứng yên, rẽ xe và lên/xuống ở cả Editor/EXE.
+
+## Danh sách thành phần
 
 - TravelInput: Input System actions, tách binding khỏi logic di chuyển.
 - TravelController: CharacterController, camera góc nhìn thứ nhất và chuyển trạng thái lên/xuống xe.

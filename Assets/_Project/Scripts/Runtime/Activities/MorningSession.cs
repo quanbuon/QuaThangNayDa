@@ -32,9 +32,13 @@ namespace QuaThangNayDa
             var keyboard = Keyboard.current;
             if (_started && !Player.IsPaused && keyboard != null)
             {
-                if (keyboard.tabKey.wasPressedThisFrame) { _panel = !_panel; _selected = null; }
+                if (keyboard.tabKey.wasPressedThisFrame) { _panel = !_panel; _selected = null; _scroll = Vector2.zero; _message = ""; }
                 if (!_panel && Simulation.Activity == MorningActivity.None && _target != null && keyboard.fKey.wasPressedThisFrame)
-                { _selected = _target; _panel = true; }
+                { _selected = _target; _panel = true; _scroll = Vector2.zero; _message = ""; }
+                else if (!_panel && keyboard.fKey.wasPressedThisFrame)
+                    _message = Player.IsRiding ? "Can xuong xe (E) truoc khi tuong tac."
+                        : Simulation.Activity != MorningActivity.None ? "Dang hoat dong. Bam Tab de xem/dung hoat dong."
+                        : "Chua nham dung bang: den gan duoi 3m, dua dau + vao phan than bang roi bam F.";
             }
             Simulation.Paused = !_started || Player.IsPaused;
             if (!Simulation.Paused && !Simulation.Ended)
@@ -76,11 +80,20 @@ namespace QuaThangNayDa
             GUILayout.EndArea();
             if (!_panel && _started && !sim.Ended)
             {
+                GUI.Label(new Rect(Screen.width / 2f - 6, Screen.height / 2f - 10, 20, 20), "+");
                 GUI.Label(new Rect(20, 110, width, 40), _target != null ? "F: " + _target.Label : "Toi bang AN SANG / LOP HOC / CA PHE / NGHI; nhin bang va bam F.");
+                GUI.Label(new Rect(20, 195, width, 65), _message);
                 if (sim.Activity != MorningActivity.None && GUI.Button(new Rect(20, 155, 300, 35), "Tab de xem hoat dong / tien nhanh")) _panel = true;
                 return;
             }
             GUILayout.BeginArea(new Rect(12, 108, width, Mathf.Max(100, Screen.height - 175)), GUI.skin.box);
+            // Keep the selected station / rejection visible even after scrolling the journal.
+            if (_selected != null)
+            {
+                GUILayout.Label("DANG TUONG TAC: " + _selected.Label);
+                if (sim.Activity == MorningActivity.None) GUILayout.Label(sim.Preview(_selected.Activity));
+            }
+            if (!string.IsNullOrEmpty(_message)) GUILayout.Label(_message);
             _scroll = GUILayout.BeginScrollView(_scroll);
             GUI.enabled = !Player.IsPaused;
             if (!_started)
@@ -102,17 +115,20 @@ namespace QuaThangNayDa
                 }
                 else if (_selected != null)
                 {
-                    GUILayout.Label(sim.Preview(_selected.Activity));
-                    if (GUILayout.Button("XAC NHAN BAT DAU"))
+                    bool eligible = sim.CanStart(_selected.Activity, out string reason);
+                    GUI.enabled = !Player.IsPaused && eligible;
+                    if (GUILayout.Button(eligible ? "XAC NHAN BAT DAU" : "CHUA THE BAT DAU - xem thong bao o tren"))
                     {
                         if (!CanUseSelected()) _message = "Can xuong xe va dung sat bang hoat dong.";
-                        else if (sim.Start(_selected.Activity, out _message)) _minuteFraction = 0;
+                        else if (sim.Start(_selected.Activity, out _message))
+                        { _minuteFraction = 0; _message = "DA BAT DAU: " + _selected.Label + ". So phut se tang; co the bam THUC HIEN TIEP."; }
                     }
+                    GUI.enabled = !Player.IsPaused;
+                    if (!eligible && !reason.Contains("GIO")) GUILayout.Label(reason);
                 }
                 if (GUILayout.Button("DONG BANG (Tab)")) { _panel = false; _selected = null; }
             }
             if (sim.Ended) GUILayout.Label("TONG KET BUOI SANG M2 - xem tung khoan ben duoi. Choi lai bang Stop/Play; chua co luu game.");
-            GUILayout.Label(_message);
             foreach (string line in sim.Journal) GUILayout.Label(line);
             GUI.enabled = true;
             GUILayout.EndScrollView();

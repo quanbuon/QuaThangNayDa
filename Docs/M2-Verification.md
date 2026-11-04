@@ -51,6 +51,17 @@ ngắt/nối ca làm không cộng phút nghỉ; chốt lương một lần; gi�
 
 ## Chờ chơi thử
 
+### Phản hồi tương tác học/làm
+
+Người dùng báo ăn sáng được nhưng học/làm không thấy phản hồi. Chưa biết giờ game
+hoặc bảng có nhận raycast trong lần đó. Kiểm tra code xác nhận học/làm bị khóa ngoài
+khung lịch, còn thông báo lỗi nằm thấp trong vùng cuộn.
+Đã dùng CanStart chung cho UI/luật, hiển thị giờ mở/đóng và số phút còn chờ ở đầu bảng,
+đưa thông báo ra ngoài vùng cuộn và cuộn về đầu khi mở tương tác mới.
+Thêm dấu ngắm + và phản hồi F khi chưa nhắm đúng, còn trên xe hoặc đang hoạt động.
+Không thay giờ lịch, không cho học/làm ngoài giờ và không tự cộng thưởng khi nhấn F.
+Kiểm tra luật bổ sung thông báo đến sớm/đã hết giờ; hình ảnh và thao tác cần thử lại.
+
 - [ ] Bảng chỉ dẫn nhìn thấy, F đúng điểm, không tương tác xuyên tường/từ xa/trên xe.
 - [ ] Hướng dẫn không trôi giờ; Esc và mất focus dừng giờ.
 - [ ] Tab vẫn trôi giờ, con trỏ và khóa điều khiển đúng khi đóng/mở bảng.

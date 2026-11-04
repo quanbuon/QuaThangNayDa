@@ -54,6 +54,10 @@ namespace QuaThangNayDa.Core
 
         public string Preview(MorningActivity activity)
         {
+            if (activity == MorningActivity.Study && (Minute < _rules.ClassStart || Minute >= _rules.ClassEnd))
+                return ScheduleReason("Lop hoc", _rules.ClassStart, _rules.ClassEnd);
+            if (activity == MorningActivity.Work && (Minute < _rules.WorkStart || Minute >= _rules.WorkEnd))
+                return ScheduleReason("Ca lam", _rules.WorkStart, _rules.WorkEnd);
             int duration = activity == MorningActivity.Breakfast ? _rules.BreakfastMinutes :
                 activity == MorningActivity.Rest ? _rules.RestMinutes :
                 activity == MorningActivity.Study ? Math.Max(0, _rules.ClassEnd - Minute) : Math.Max(0, _rules.WorkEnd - Minute);
@@ -66,17 +70,31 @@ namespace QuaThangNayDa.Core
             return message;
         }
 
-        public bool Start(MorningActivity activity, out string reason)
+        public bool CanStart(MorningActivity activity, out string reason)
         {
             reason = "";
             if (Paused || Ended || Activity != MorningActivity.None || activity == MorningActivity.None)
             { reason = "Chua the bat dau hoat dong."; return false; }
             if (activity == MorningActivity.Study && (Minute < _rules.ClassStart || Minute >= _rules.ClassEnd))
-            { reason = "Chi vao hoc trong gio lop."; return false; }
+            { reason = ScheduleReason("Lop hoc", _rules.ClassStart, _rules.ClassEnd); return false; }
             if (activity == MorningActivity.Work && (Minute < _rules.WorkStart || Minute >= _rules.WorkEnd))
-            { reason = "Chi nhan ca trong gio lam."; return false; }
+            { reason = ScheduleReason("Ca lam", _rules.WorkStart, _rules.WorkEnd); return false; }
             if (activity == MorningActivity.Breakfast && Money < _rules.BreakfastCost)
             { reason = "Khong du tien an sang."; return false; }
+            return true;
+        }
+
+        private string ScheduleReason(string label, int start, int end)
+        {
+            string slot = $"{start / 60:00}:{start % 60:00} - {end / 60:00}:{end % 60:00}";
+            return Minute < start
+                ? $"{label}: CHUA TOI GIO. Lich {slot}; con {start - Minute} phut. Co the nghi o bang NGHI NGOI."
+                : $"{label}: DA HET GIO. Lich {slot}. Khong the tham gia them trong luot nay.";
+        }
+
+        public bool Start(MorningActivity activity, out string reason)
+        {
+            if (!CanStart(activity, out reason)) return false;
             _remaining = activity == MorningActivity.Breakfast ? _rules.BreakfastMinutes :
                 activity == MorningActivity.Rest ? _rules.RestMinutes : int.MaxValue;
             if (activity == MorningActivity.Breakfast)

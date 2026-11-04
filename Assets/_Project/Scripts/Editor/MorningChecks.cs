@@ -18,6 +18,8 @@ namespace QuaThangNayDa.Editor
             Require(sim.Advance(100) == 0 && sim.Minute == 420, "Pause stops clock");
             sim.Paused = false;
             Require(!sim.Start(MorningActivity.Study, out _), "Reject early attendance");
+            Require(!sim.CanStart(MorningActivity.Work, out string earlyWork) && earlyWork.Contains("09:30"), "Work explains opening time");
+            Require(sim.Preview(MorningActivity.Study).Contains("CHUA TOI GIO"), "Early study preview explains rejection");
             Require(sim.Start(MorningActivity.Breakfast, out _), "Start breakfast");
             Require(sim.Advance(100) == 15 && sim.Minute == 435 && sim.Money == 80000, "Meal stops jump and charges once");
             Require(sim.Advance(100) == 45 && sim.Minute == 480, "Jump stops at class start");
@@ -26,6 +28,7 @@ namespace QuaThangNayDa.Editor
             sim.Cancel();
             sim.Advance(40);
             Require(sim.ClassMinutes == 20 && Math.Abs(sim.Learning - 40) < 0.001, "Partial attendance and one settlement");
+            Require(!sim.CanStart(MorningActivity.Study, out string lateClass) && lateClass.Contains("DA HET GIO"), "Reject attendance at exact end");
             sim.Advance(30);
             sim.Start(MorningActivity.Work, out _);
             sim.Advance(10);

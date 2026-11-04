@@ -7,6 +7,7 @@ namespace QuaThangNayDa
     public sealed class MorningConfig : ScriptableObject
     {
         public MorningRules Rules = new MorningRules();
+        public bool EnableStory;
         [Min(0.1f)] public float RealSecondsPerMinute = 6;
     }
 }

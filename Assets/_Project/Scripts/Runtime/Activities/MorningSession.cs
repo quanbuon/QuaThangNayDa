@@ -9,6 +9,7 @@ namespace QuaThangNayDa
     {
         public MorningConfig Config;
         public TravelController Player;
+        public StudentPhone Phone;
         public MorningSimulation Simulation { get; private set; }
         private bool _started, _panel = true;
         private float _minuteFraction;
@@ -19,7 +20,7 @@ namespace QuaThangNayDa
 
         private void Start()
         {
-            Simulation = new MorningSimulation(Config.Rules);
+            Simulation = new MorningSimulation(Config.Rules, Config.EnableStory);
             Player.ShowDiagnostics = false;
             SyncControls();
         }
@@ -34,7 +35,7 @@ namespace QuaThangNayDa
                 _targetHitPoint = hit.point;
             }
             var keyboard = Keyboard.current;
-            if (_started && !Player.IsPaused && keyboard != null)
+            if (_started && !Player.IsPaused && !Simulation.StoryPending && !(Phone != null && Phone.IsOpen) && keyboard != null)
             {
                 if (keyboard.tabKey.wasPressedThisFrame) { _panel = !_panel; _selected = null; _scroll = Vector2.zero; _message = ""; }
                 if (!_panel && Simulation.Activity == MorningActivity.None && _target != null && keyboard.fKey.wasPressedThisFrame)
@@ -49,10 +50,10 @@ namespace QuaThangNayDa
                         : "Chua nham dung bang: den gan duoi 3m, dua dau + vao phan than bang roi bam F.";
             }
             Simulation.Paused = !_started || Player.IsPaused;
-            if (!Simulation.Paused && !Simulation.Ended)
+            if (!Simulation.Paused && !Simulation.StoryPending && !Simulation.Ended)
             {
                 _minuteFraction += Time.deltaTime / Mathf.Max(0.1f, Config.RealSecondsPerMinute);
-                while (_minuteFraction >= 1 && !Simulation.Ended)
+                while (_minuteFraction >= 1 && !Simulation.StoryPending && !Simulation.Ended)
                 {
                     _minuteFraction -= 1;
                     Simulation.Advance(1);
@@ -63,7 +64,7 @@ namespace QuaThangNayDa
 
         private void SyncControls()
         {
-            Player.OverlayOpen = _panel || !_started || Simulation.Ended;
+            Player.OverlayOpen = _panel || !_started || Simulation.Ended || Simulation.StoryPending || (Phone != null && Phone.IsOpen);
             Player.ControlsBlocked = Player.OverlayOpen || Simulation.Activity != MorningActivity.None;
         }
         private bool CanUseSelected(out string reason)
@@ -86,6 +87,7 @@ namespace QuaThangNayDa
             return true;
         }
         private static string Clock(int minute) => $"{minute / 60:00}:{minute % 60:00}";
+        public void CloseActivityPanel() { _panel = false; _selected = null; SyncControls(); }
         private void OnGUI()
         {
             if (Simulation == null) return;
@@ -93,10 +95,11 @@ namespace QuaThangNayDa
             var rules = sim.Rules;
             float width = Mathf.Min(680, Screen.width - 24);
             GUILayout.BeginArea(new Rect(12, 12, width, 90), GUI.skin.box);
-            GUILayout.Label($"M2 | {Clock(sim.Minute)} | {(sim.Paused ? "DUNG GIO" : "GIO DANG CHAY")} | Tab: lich/nhat ky | Esc: tam dung");
+            GUILayout.Label($"{(Config.EnableStory ? "M3" : "M2")} | {Clock(sim.Minute)} | {(sim.Paused || sim.StoryPending ? "DUNG GIO" : "GIO DANG CHAY")} | P: dien thoai | Tab: lich | Esc: tam dung");
             GUILayout.Label($"Tien {sim.Money:N0}d | Suc khoe {sim.Health:0} | Nang luong {sim.Energy:0} | Hoc tap {sim.Learning:0} | Quan he {sim.Relations:0}");
             GUILayout.Label($"{(Player.IsRiding ? "DANG TREN XE" : "DANG DI BO")} | {sim.Activity} | Hoc {sim.ClassMinutes} phut | Lam {sim.WorkMinutes} phut");
             GUILayout.EndArea();
+            if (Phone != null && Phone.IsOpen) return;
             if (!_panel && _started && !sim.Ended)
             {
                 GUI.Label(new Rect(Screen.width / 2f - 6, Screen.height / 2f - 10, 20, 20), "+");
@@ -114,10 +117,10 @@ namespace QuaThangNayDa
             }
             if (!string.IsNullOrEmpty(_message)) GUILayout.Label(_message);
             _scroll = GUILayout.BeginScrollView(_scroll);
-            GUI.enabled = !Player.IsPaused;
+            GUI.enabled = !Player.IsPaused && !sim.StoryPending;
             if (!_started)
             {
-                GUILayout.Label("HUONG DAN AN TOAN: dong ho chua chay. Day la M2, chua co tinh huong va luu game.");
+                GUILayout.Label("HUONG DAN AN TOAN: dong ho chua chay. P mo dien thoai. Ban thu chua co luu game.");
                 GUILayout.Label("Thuc day luc 07:00; an sang o bang gan xe, di hoc ben trai, lam o ca phe ben phai.");
                 GUILayout.Label("Can di bo toi bang, nhin bang va bam F. Panel thuong VAN CHAY GIO. Esc de tam dung.");
                 if (GUILayout.Button("THUC DAY - BAT DAU BUOI SANG")) { _started = true; _panel = false; sim.Paused = false; }

@@ -22,7 +22,15 @@ Không sử dụng model từ ZIP tham khảo khi chưa kiểm tra nguồn và q
 Nền/cube chỉ dùng kiểm tra render, không phải cảnh chính thức. SampleScene được giữ nguyên.
 M0 dùng IMGUI cho bảng chẩn đoán; HUD gameplay về sau dùng uGUI/TextMeshPro.
 
-## Buổi sáng thử M2
+## Điện thoại và tình huống M3
+
+Chọn **Qua Thang Nay Da → M3 → Create or Open Phone Story** ngoài Play Mode.
+**P** mở điện thoại, tin quản lý xuất hiện sau 10 phút học nếu tới lớp đủ sớm.
+Xem [đường chơi hai nhánh và giới hạn M3](Docs/M3-Verification.md).
+Task **M3: Build Windows (isolated)** xuất bản riêng Windows-M3.
+Chưa có lưu/tải.
+
+## Buổi sáng thử M2 (luật sinh hoạt)
 
 Chọn **Qua Thang Nay Da → M2 → Create or Open Morning Test** (ngoài Play Mode).
 Đọc [cách chơi và giới hạn M2](Docs/M2-Verification.md). F tương tác bảng, Tab lịch/nhật ký,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace QuaThangNayDa.Core
 {
-    public enum MorningActivity { None, Breakfast, Study, Work, Rest }
+    public enum MorningActivity { None, Breakfast, Study, Work, Rest, CoverShift }
 
     [Serializable]
     public sealed class MorningRules
@@ -43,17 +43,22 @@ namespace QuaThangNayDa.Core
         public bool Ended => Minute >= _rules.EndMinute || Health <= 0 || Energy <= 0;
         public IReadOnlyList<string> Journal => _journal;
         public MorningRules Rules => _rules.Copy(); // Session schedule cannot be edited through the config.
+        public ShiftCommitment Commitment { get; }
+        public bool StoryPending => Commitment != null && Commitment.NeedsChoice;
 
-        public MorningSimulation(MorningRules rules)
+        public MorningSimulation(MorningRules rules, bool enableStory = false)
         {
             rules.Validate();
             _rules = rules.Copy();
             Minute = rules.StartMinute;
+            if (enableStory) Commitment = new ShiftCommitment();
             Record("Lich da khoa cho luot thu. Chuyen can va luong tinh theo phut thuc hien.");
         }
 
         public string Preview(MorningActivity activity)
         {
+            if (activity == MorningActivity.CoverShift)
+                return "Gap quan ly, lam thay 20 phut sau khi nhan loi; du viec +20.000d, +3 quan he. Phut vang lop van bi tinh rieng.";
             if (activity == MorningActivity.Study && (Minute < _rules.ClassStart || Minute >= _rules.ClassEnd))
                 return ScheduleReason("Lop hoc", _rules.ClassStart, _rules.ClassEnd);
             if (activity == MorningActivity.Work && (Minute < _rules.WorkStart || Minute >= _rules.WorkEnd))
@@ -73,8 +78,11 @@ namespace QuaThangNayDa.Core
         public bool CanStart(MorningActivity activity, out string reason)
         {
             reason = "";
-            if (Paused || Ended || Activity != MorningActivity.None || activity == MorningActivity.None)
+            if (Paused || StoryPending || Ended || Activity != MorningActivity.None || activity == MorningActivity.None)
             { reason = "Chua the bat dau hoat dong."; return false; }
+            if (activity == MorningActivity.CoverShift && (Commitment == null || !Commitment.Active ||
+                Commitment.Choice != CommitmentChoice.CoverShift || Minute >= Commitment.Deadline))
+            { reason = "Chi lam thay sau khi nhan loi quan ly qua dien thoai, trong han cam ket."; return false; }
             if (activity == MorningActivity.Study && (Minute < _rules.ClassStart || Minute >= _rules.ClassEnd))
             { reason = ScheduleReason("Lop hoc", _rules.ClassStart, _rules.ClassEnd); return false; }
             if (activity == MorningActivity.Work && (Minute < _rules.WorkStart || Minute >= _rules.WorkEnd))
@@ -109,6 +117,7 @@ namespace QuaThangNayDa.Core
 
         public void Cancel()
         {
+            if (StoryPending) return;
             if (Activity != MorningActivity.None) Record("Dung " + Activity + "; giu so phut da thuc hien.");
             Activity = MorningActivity.None;
         }
@@ -116,15 +125,16 @@ namespace QuaThangNayDa.Core
         public int Advance(int minutes)
         {
             if (minutes < 0) throw new ArgumentOutOfRangeException(nameof(minutes));
-            if (Paused || Ended) return 0;
+            if (Paused || StoryPending || Ended) return 0;
             int advanced = 0;
             for (int i = 0; i < minutes && !Ended; i++)
             {
                 var previous = Activity;
+                int intervalStart = Minute;
                 // Credit [Minute, Minute + 1), never credit minutes outside the slot.
                 if (Activity == MorningActivity.Study && Minute >= _rules.ClassStart && Minute < _rules.ClassEnd) ClassMinutes++;
                 if (Activity == MorningActivity.Work && Minute >= _rules.WorkStart && Minute < _rules.WorkEnd) WorkMinutes++;
-                Energy = Clamp(Energy - (Activity == MorningActivity.Work ? 0.12 : 0.04));
+                Energy = Clamp(Energy - (Activity == MorningActivity.Work || Activity == MorningActivity.CoverShift ? 0.12 : 0.04));
                 Minute++;
                 advanced++;
                 if (Activity == MorningActivity.Breakfast || Activity == MorningActivity.Rest)
@@ -139,12 +149,45 @@ namespace QuaThangNayDa.Core
                     }
                 }
                 SettleSchedule();
+                bool commitmentBoundary = false;
+                if (Commitment != null)
+                {
+                    if (Commitment.Tick(previous, intervalStart))
+                    { SettleCommitment(); commitmentBoundary = true; }
+                    if (previous == MorningActivity.Study && Commitment.TryOffer(Minute, _rules.ClassEnd, ClassMinutes))
+                        Record("DIEN THOAI / Quan ly: Quan dang thieu nguoi. Em co the sang lam thay 20 phut khong? Mo tin de chon. DONG HO TAM DUNG.");
+                    if (Minute >= _rules.ClassEnd && Commitment.MarkUnavailable())
+                        Record("Tinh huong khong kich hoat: can vao hoc som va tham gia it nhat 10 phut.");
+                }
                 if (Ended) { Activity = MorningActivity.None; Record("Ket thuc buoi sang."); }
+                if (Ended && Commitment != null && Commitment.FailAtEnd()) SettleCommitment();
                 // A fast-forward batch must return control at schedule boundaries or activity completion.
-                if (Activity != previous || Minute == _rules.ClassStart || Minute == _rules.ClassEnd ||
+                if (StoryPending || commitmentBoundary || Activity != previous || Minute == _rules.ClassStart || Minute == _rules.ClassEnd ||
                     Minute == _rules.WorkStart || Minute == _rules.WorkEnd) break;
             }
             return advanced;
+        }
+
+        public bool ChooseCommitment(CommitmentChoice choice)
+        {
+            if (Paused || Ended || Commitment == null || !Commitment.Choose(choice, Minute, _rules.ClassEnd)) return false;
+            if (choice == CommitmentChoice.CoverShift) Cancel();
+            Record($"CAM KET / Da chon {choice}. CHUA nhan thuong. Can lam them 20 phut truoc {Commitment.Deadline / 60:00}:{Commitment.Deadline % 60:00}.");
+            return true;
+        }
+
+        private void SettleCommitment()
+        {
+            if (Commitment.State == CommitmentState.Completed)
+            {
+                if (Commitment.Choice == CommitmentChoice.CoverShift)
+                { Money += 20000; Relations = Clamp(Relations + 3); Record("CAM KET / Lam thay du 20 phut: +20.000d, +3 quan he. Khong tinh vao luong ca thuong."); }
+                else
+                { Relations = Clamp(Relations - 2); Record("CAM KET / O lai hoc du 20 phut: quan ly that vong, -2 quan he. Hoc tap tinh theo lich rieng."); }
+            }
+            else
+            { Relations = Clamp(Relations - 4); Record("CAM KET / Qua han, chua du so phut: -4 quan he, khong thuong. Hau qua lich tinh rieng."); }
+            if (Activity == MorningActivity.CoverShift) Activity = MorningActivity.None;
         }
 
         private void SettleSchedule()

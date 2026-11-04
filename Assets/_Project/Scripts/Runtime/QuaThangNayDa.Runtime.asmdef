@@ -1,5 +1,5 @@
 {
   "name": "QuaThangNayDa.Runtime",
   "rootNamespace": "QuaThangNayDa",
-  "references": ["QuaThangNayDa.Core"]
+  "references": ["QuaThangNayDa.Core", "Unity.InputSystem"]
 }

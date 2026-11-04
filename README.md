@@ -22,7 +22,14 @@ Không sử dụng model từ ZIP tham khảo khi chưa kiểm tra nguồn và q
 Nền/cube chỉ dùng kiểm tra render, không phải cảnh chính thức. SampleScene được giữ nguyên.
 M0 dùng IMGUI cho bảng chẩn đoán; HUD gameplay về sau dùng uGUI/TextMeshPro.
 
-## Build Windows
+## Khu thử M1
+
+Tắt Play Mode rồi chọn **Qua Thang Nay Da → M1 → Create or Open Travel Test**.
+Chơi thử theo [hướng dẫn và checklist M1](Docs/M1-Verification.md).
+Task **M1: Build Windows (isolated)** tái sử dụng cache validation của M0,
+xuất riêng `Build/Windows-M1/QuaThangNayDa-M1.exe`, không ghi đè bản M0.
+
+## Build M0
 
 Chạy VS Code task **M0: Build Windows (isolated)** hoặc:
 

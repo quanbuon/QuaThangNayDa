@@ -14,8 +14,8 @@
 - [x] Unity compile Core/Runtime/Editor không lỗi.
 - [x] Build Windows tạo thành công từ scene Bootstrap.
 - [ ] Bản build chạy có hình; ghi nhận GPU, độ phân giải, scene.
-- [ ] Nút DEBUG PROBE phản hồi.
-- [ ] VS Code attach và breakpoint thực sự dừng.
+- [x] Nút DEBUG PROBE phản hồi trong Editor: ảnh người dùng cho thấy số đếm 12.
+- [x] VS Code attach và breakpoint thực sự dừng: người dùng xác nhận.
 - [x] Concept được tạo và gửi người dùng duyệt (chưa nhận xác nhận phong cách).
 
 ## Kết quả chạy ngày 04/11/2026
@@ -27,7 +27,8 @@
   Hai lần khởi chạy đều dùng cửa sổ ẩn. Chưa xác định do chế độ cửa sổ/chụp ảnh
   hay render của scene; không đánh dấu đạt kiểm tra hình ảnh.
 - Báo cáo và log cục bộ nằm trong `Logs/M0` (không đưa vào Git).
-- Chưa kiểm tra được nút DEBUG PROBE hoặc breakpoint bằng thao tác thực tế.
+- Người dùng đã xác nhận render DX12, nút DEBUG PROBE trong Editor và breakpoint VS Code.
+  Hình ảnh bản standalone vẫn cần kiểm tra riêng, không suy ra từ ảnh Editor.
 
 ### Kiểm tra thủ công còn cần
 

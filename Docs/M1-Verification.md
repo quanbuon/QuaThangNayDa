@@ -47,6 +47,10 @@ Không cần tạo lại scene hiện có; thoát Play và chờ Unity compile r
 
 ## Điều tra giật khi di chuyển
 
+Sau lần chỉnh camera và yêu cầu thử đối chiếu EXE, người dùng phản hồi "mượt rồi".
+Ghi nhận xác nhận cảm nhận người chơi; chưa có profiler để kết luận nguyên nhân giật Editor
+hoặc chứng nhận hiệu năng mục tiêu.
+
 Người dùng xác nhận xe chạy sau sửa ma sát nhưng còn thấy giật. Chưa biết chỉ xảy ra
 khi đi bộ/lái xe/xoay chuột, hoặc trong Editor hay standalone; chưa có capture profiler.
 Đã bỏ camera đuổi theo bằng Lerp/Slerp liên tục, chỉ blend offset trong 0,25 giây khi

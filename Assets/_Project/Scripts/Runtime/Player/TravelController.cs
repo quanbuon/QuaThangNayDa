@@ -7,6 +7,11 @@ namespace QuaThangNayDa
     {
         public Camera View;
         public ArcadeScooter Scooter;
+        public bool ControlsBlocked { get; set; }
+        public bool OverlayOpen { get; set; }
+        public bool ShowDiagnostics = true;
+        public bool IsRiding => _riding;
+        public bool IsPaused => _paused;
         private TravelInput _input;
         private CharacterController _controller;
         private bool _riding, _paused;
@@ -42,7 +47,13 @@ namespace QuaThangNayDa
                 _frameCount = 0;
             }
             if (_input.Pause) SetPaused(!_paused);
-            if (_paused) return;
+            Cursor.lockState = _paused || OverlayOpen ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible = _paused || OverlayOpen;
+            if (_paused || ControlsBlocked)
+            {
+                if (_riding) Scooter.SetInput(Vector2.zero, true);
+                return;
+            }
             Vector2 look = _input.Look * 0.09f;
             _yaw += look.x;
             _pitch = Mathf.Clamp(_pitch - look.y, -65, 65);
@@ -142,6 +153,11 @@ namespace QuaThangNayDa
         private void OnDisable() { Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }
         private void OnGUI()
         {
+            if (!ShowDiagnostics)
+            {
+                if (_paused && GUI.Button(new Rect(20, Screen.height - 55, 220, 35), "TAM DUNG - TIEP TUC")) SetPaused(false);
+                return;
+            }
             GUILayout.BeginArea(new Rect(16, 16, 550, 225), GUI.skin.box);
             GUILayout.Label("M1 / KHU THU DIEU KHIEN - CHUA PHAI MY THUAT CHINH THUC");
             GUILayout.Label("WASD: di/lai | Chuot: nhin | E: len/xuong xe | Space: phanh");

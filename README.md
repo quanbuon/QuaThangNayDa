@@ -5,10 +5,10 @@ stylized bán hiện thực. Bản đầu là một buổi sáng 25–35 phút, 
 
 ## Hiện trạng
 
-M0 đã build Windows thành công và chạy được kiểm tra thông số GPU/scene ở 1080p.
-Chưa nghiệm thu hình ảnh: chụp tự động trong cửa sổ ẩn bị lỗi/ảnh đen; cần mở bản chạy
-trực tiếp để kiểm tra. Nút tương tác và breakpoint cũng chưa được xác minh.
-Chưa có gameplay, lưu tiến trình hay cảnh mỹ thuật chính thức.
+M0: người dùng đã xác nhận render, nút thử và breakpoint trong Editor.
+M1: đi bộ/lên xe đã được thử, sửa lỗi ma sát xe và camera; người dùng phản hồi đã mượt.
+M2: đã build lát cắt đồng hồ/lịch/chỉ số/ăn/nghỉ/học/làm; kiểm tra luật tự động đạt,
+chờ chơi thử tương tác và hình ảnh. Chưa có tình huống, lưu tiến trình hoặc mỹ thuật chính thức.
 Không sử dụng model từ ZIP tham khảo khi chưa kiểm tra nguồn và quyền sử dụng.
 
 ## Mở và chạy M0
@@ -22,7 +22,14 @@ Không sử dụng model từ ZIP tham khảo khi chưa kiểm tra nguồn và q
 Nền/cube chỉ dùng kiểm tra render, không phải cảnh chính thức. SampleScene được giữ nguyên.
 M0 dùng IMGUI cho bảng chẩn đoán; HUD gameplay về sau dùng uGUI/TextMeshPro.
 
-## Khu thử M1
+## Buổi sáng thử M2
+
+Chọn **Qua Thang Nay Da → M2 → Create or Open Morning Test** (ngoài Play Mode).
+Đọc [cách chơi và giới hạn M2](Docs/M2-Verification.md). F tương tác bảng, Tab lịch/nhật ký,
+Esc tạm dừng. Chưa có tình huống M3 hoặc save/load M4.
+Build riêng bằng task **M2: Build Windows (isolated)**.
+
+## Khu thử M1 (điều khiển)
 
 Tắt Play Mode rồi chọn **Qua Thang Nay Da → M1 → Create or Open Travel Test**.
 Chơi thử theo [hướng dẫn và checklist M1](Docs/M1-Verification.md).

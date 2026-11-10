@@ -30,6 +30,13 @@ namespace QuaThangNayDa.Core
         private readonly List<string> _journal = new List<string>();
         private int _remaining;
         private bool _classSettled, _workSettled;
+        private int _hospitalTimeLimit;
+        private int _hospitalTreatmentMinutes;
+        private double _hospitalDischargeHealth;
+        public HospitalRules HospitalRules { get; set; } = new HospitalRules();
+        public bool Hospitalized { get; private set; }
+        public int TreatmentRemaining { get; private set; }
+        public int MedicalDebt { get; private set; }
         public int Minute { get; private set; }
         public int Money { get; private set; } = 100000;
         public double Health { get; private set; } = 80;
@@ -40,7 +47,7 @@ namespace QuaThangNayDa.Core
         public int WorkMinutes { get; private set; }
         public MorningActivity Activity { get; private set; }
         public bool Paused { get; set; }
-        public bool Ended => Minute >= _rules.EndMinute || Health <= 0 || Energy <= 0;
+        public bool Ended => (!Hospitalized && Minute >= _rules.EndMinute) || Health <= 0 || Energy <= 0;
         public IReadOnlyList<string> Journal => _journal;
         public MorningRules Rules => _rules.Copy(); // Session schedule cannot be edited through the config.
         public ShiftCommitment Commitment { get; private set; }
@@ -51,6 +58,10 @@ namespace QuaThangNayDa.Core
             return new MorningSnapshot
             {
                 Rules = _rules.Copy(), Minute = Minute, Money = Money, Health = Health, Energy = Energy,
+                HospitalRules = HospitalRules.Copy(), Hospitalized = Hospitalized,
+                TreatmentRemaining = TreatmentRemaining, MedicalDebt = MedicalDebt,
+                HospitalTimeLimit = _hospitalTimeLimit, HospitalDischargeHealth = _hospitalDischargeHealth,
+                HospitalTreatmentMinutes = _hospitalTreatmentMinutes,
                 Learning = Learning, Relations = Relations, ClassMinutes = ClassMinutes, WorkMinutes = WorkMinutes,
                 Activity = Activity, Remaining = _remaining, ClassSettled = _classSettled, WorkSettled = _workSettled,
                 StoryEnabled = Commitment != null, CommitmentState = Commitment?.State ?? CommitmentState.NotOffered,
@@ -64,8 +75,24 @@ namespace QuaThangNayDa.Core
         {
             if (data == null || data.Rules == null) throw new ArgumentException("Missing simulation snapshot.");
             data.Rules.Validate();
+            var hospitalRules = data.HospitalRules == null ? new HospitalRules() : data.HospitalRules.Copy();
+            hospitalRules.Validate();
+            // Missing hospital fields in legacy saves mean no injury, debt, or extension.
+            int hospitalTimeLimit = data.HospitalTimeLimit == 0 ? data.Rules.EndMinute : data.HospitalTimeLimit;
+            if (hospitalTimeLimit < data.Rules.EndMinute || data.Minute > hospitalTimeLimit ||
+                data.HospitalTreatmentMinutes < 0 ||
+                (long)hospitalTimeLimit != (long)data.Rules.EndMinute + data.HospitalTreatmentMinutes ||
+                data.TreatmentRemaining < 0 || data.TreatmentRemaining > data.HospitalTreatmentMinutes || data.MedicalDebt < 0 ||
+                (!data.Hospitalized && data.TreatmentRemaining != 0) ||
+                (data.Hospitalized && (data.Activity != MorningActivity.None || data.Remaining != 0 ||
+                    data.Health < 1 || data.Energy < 1 ||
+                    (long)data.Minute + data.TreatmentRemaining > hospitalTimeLimit ||
+                    double.IsNaN(data.HospitalDischargeHealth) || data.HospitalDischargeHealth < 1 || data.HospitalDischargeHealth > 100)) ||
+                (!data.Hospitalized && data.HospitalDischargeHealth != 0) ||
+                (data.HospitalRules == null && (data.Hospitalized || data.MedicalDebt != 0 || hospitalTimeLimit != data.Rules.EndMinute)))
+                throw new ArgumentException("Invalid hospital snapshot.");
             bool ValidStat(double value) => !double.IsNaN(value) && !double.IsInfinity(value) && value >= 0 && value <= 100;
-            if (data.Minute < data.Rules.StartMinute || data.Minute > data.Rules.EndMinute || data.Money < 0 ||
+            if (data.Minute < data.Rules.StartMinute || data.Money < 0 ||
                 !ValidStat(data.Health) || !ValidStat(data.Energy) || !ValidStat(data.Learning) || !ValidStat(data.Relations) ||
                 !Enum.IsDefined(typeof(MorningActivity), data.Activity) ||
                 data.ClassMinutes < 0 || data.ClassMinutes > Math.Max(0, Math.Min(data.Minute, data.Rules.ClassEnd) - data.Rules.ClassStart) ||
@@ -80,6 +107,10 @@ namespace QuaThangNayDa.Core
             var sim = new MorningSimulation(data.Rules, data.StoryEnabled)
             {
                 Minute = data.Minute, Money = data.Money, Health = data.Health, Energy = data.Energy,
+                HospitalRules = hospitalRules, Hospitalized = data.Hospitalized,
+                TreatmentRemaining = data.TreatmentRemaining, MedicalDebt = data.MedicalDebt,
+                _hospitalTimeLimit = hospitalTimeLimit, _hospitalDischargeHealth = data.HospitalDischargeHealth,
+                _hospitalTreatmentMinutes = data.HospitalTreatmentMinutes,
                 Learning = data.Learning, Relations = data.Relations, ClassMinutes = data.ClassMinutes, WorkMinutes = data.WorkMinutes,
                 Activity = data.Activity, _remaining = data.Remaining, _classSettled = data.ClassSettled, _workSettled = data.WorkSettled,
                 Commitment = data.StoryEnabled ? ShiftCommitment.Restore(data) : null
@@ -101,6 +132,7 @@ namespace QuaThangNayDa.Core
             rules.Validate();
             _rules = rules.Copy();
             Minute = rules.StartMinute;
+            _hospitalTimeLimit = rules.EndMinute;
             if (enableStory) Commitment = new ShiftCommitment();
             Record("Lich da khoa cho luot thu. Chuyen can va luong tinh theo phut thuc hien.");
         }
@@ -128,7 +160,7 @@ namespace QuaThangNayDa.Core
         public bool CanStart(MorningActivity activity, out string reason)
         {
             reason = "";
-            if (Paused || StoryPending || Ended || Activity != MorningActivity.None || activity == MorningActivity.None)
+            if (Paused || StoryPending || Ended || Hospitalized || Activity != MorningActivity.None || activity == MorningActivity.None)
             { reason = "Chua the bat dau hoat dong."; return false; }
             if (activity == MorningActivity.CoverShift && (Commitment == null || !Commitment.Active ||
                 Commitment.Choice != CommitmentChoice.CoverShift || Minute >= Commitment.Deadline))
@@ -172,21 +204,86 @@ namespace QuaThangNayDa.Core
             Activity = MorningActivity.None;
         }
 
-        public int Advance(int minutes)
+        // Returns true only for an applied injury. Repeated collision callbacks during admission are inert.
+        public bool ReceiveImpact(double speed)
+        {
+            if (double.IsNaN(speed) || double.IsInfinity(speed) || speed < 0)
+                throw new ArgumentOutOfRangeException(nameof(speed));
+            if (Paused || StoryPending || Ended || Hospitalized) return false;
+            if (HospitalRules == null) throw new InvalidOperationException("Hospital rules are missing.");
+            HospitalRules.Validate();
+            if (speed < HospitalRules.ScrapeSpeed) return false;
+            if (speed < HospitalRules.LightSpeed)
+            {
+                Health = Clamp(Health - HospitalRules.ScrapeHealthLoss);
+                Record("Va quet nhe: giam suc khoe.");
+                if (Ended) FinishMorning();
+                return true;
+            }
+            bool severe = speed >= HospitalRules.SevereSpeed;
+            int duration = severe ? HospitalRules.SevereTreatmentMinutes : 0;
+            int fee = severe ? HospitalRules.SevereFee : HospitalRules.LightFee;
+            int paid = Math.Min(Money, fee);
+            // Check before mutating: neither time nor accumulated debt may wrap around.
+            int limit = checked(_rules.EndMinute + duration);
+            int debt = checked(MedicalDebt + (fee - paid));
+            Cancel();
+            _remaining = 0;
+            Hospitalized = true;
+            TreatmentRemaining = duration;
+            _hospitalTreatmentMinutes = duration;
+            _hospitalTimeLimit = limit;
+            _hospitalDischargeHealth = HospitalRules.DischargeHealth;
+            Health = Math.Max(1, Clamp(Health - (severe ? HospitalRules.SevereHealthLoss : HospitalRules.LightHealthLoss)));
+            Energy = Math.Max(1, Energy);
+            Money -= paid;
+            MedicalDebt = debt;
+            Record($"Nhap vien: phi {fee}d, tra {paid}d, no them {fee - paid}d; dieu tri {duration} phut.");
+            return true;
+        }
+
+        public int Treat(int minutes) => AdvanceMinutes(minutes, true);
+
+        public bool Discharge()
+        {
+            if (Paused || StoryPending || Ended || !Hospitalized || TreatmentRemaining != 0) return false;
+            Health = Math.Max(Health, _hospitalDischargeHealth);
+            _hospitalDischargeHealth = 0;
+            Hospitalized = false;
+            Record("Xuat vien: da hoi phuc, khong thu phi lan nua.");
+            if (Ended) FinishMorning();
+            return true;
+        }
+
+        public int Advance(int minutes) => AdvanceMinutes(minutes, false);
+
+        private void FinishMorning()
+        {
+            Activity = MorningActivity.None;
+            Record("Ket thuc buoi sang.");
+            if (Commitment != null && Commitment.FailAtEnd()) SettleCommitment();
+        }
+
+        private int AdvanceMinutes(int minutes, bool treatment)
         {
             if (minutes < 0) throw new ArgumentOutOfRangeException(nameof(minutes));
             if (Paused || StoryPending || Ended) return 0;
+            if (treatment && (!Hospitalized || TreatmentRemaining == 0)) return 0;
             int advanced = 0;
             for (int i = 0; i < minutes && !Ended; i++)
             {
+                // Only explicit treatment can extend the clock beyond morning end.
+                if (!treatment && Minute >= _rules.EndMinute) break;
                 var previous = Activity;
                 int intervalStart = Minute;
                 // Credit [Minute, Minute + 1), never credit minutes outside the slot.
                 if (Activity == MorningActivity.Study && Minute >= _rules.ClassStart && Minute < _rules.ClassEnd) ClassMinutes++;
                 if (Activity == MorningActivity.Work && Minute >= _rules.WorkStart && Minute < _rules.WorkEnd) WorkMinutes++;
                 Energy = Clamp(Energy - (Activity == MorningActivity.Work || Activity == MorningActivity.CoverShift ? 0.12 : 0.04));
+                if (Hospitalized) Energy = Math.Max(1, Energy);
                 Minute++;
                 advanced++;
+                if (treatment) TreatmentRemaining--;
                 if (Activity == MorningActivity.Breakfast || Activity == MorningActivity.Rest)
                 {
                     _remaining--;
@@ -209,10 +306,10 @@ namespace QuaThangNayDa.Core
                     if (Minute >= _rules.ClassEnd && Commitment.MarkUnavailable())
                         Record("Tinh huong khong kich hoat: can vao hoc som va tham gia it nhat 10 phut.");
                 }
-                if (Ended) { Activity = MorningActivity.None; Record("Ket thuc buoi sang."); }
-                if (Ended && Commitment != null && Commitment.FailAtEnd()) SettleCommitment();
+                if (Ended) FinishMorning();
                 // A fast-forward batch must return control at schedule boundaries or activity completion.
-                if (StoryPending || commitmentBoundary || Activity != previous || Minute == _rules.ClassStart || Minute == _rules.ClassEnd ||
+                if ((treatment && TreatmentRemaining == 0) || Minute == _rules.EndMinute ||
+                    StoryPending || commitmentBoundary || Activity != previous || Minute == _rules.ClassStart || Minute == _rules.ClassEnd ||
                     Minute == _rules.WorkStart || Minute == _rules.WorkEnd) break;
             }
             return advanced;

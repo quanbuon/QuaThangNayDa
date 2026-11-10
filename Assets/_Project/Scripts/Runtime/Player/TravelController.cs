@@ -12,6 +12,8 @@ namespace QuaThangNayDa
         public bool ShowDiagnostics = true;
         public bool IsRiding => _riding;
         public bool IsPaused => _paused;
+        public bool IsInBed { get; private set; }
+        private Transform _bedView, _bedExit;
         private TravelInput _input;
         private CharacterController _controller;
         private bool _riding, _paused;
@@ -49,7 +51,7 @@ namespace QuaThangNayDa
             if (_input.Pause) SetPaused(!_paused);
             Cursor.lockState = _paused || OverlayOpen ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = _paused || OverlayOpen;
-            if (_paused || ControlsBlocked)
+            if (_paused || ControlsBlocked || IsInBed)
             {
                 if (_riding) Scooter.SetInput(Vector2.zero, true);
                 return;
@@ -93,6 +95,8 @@ namespace QuaThangNayDa
 
         private void GetViewTarget(out Vector3 position, out Quaternion rotation)
         {
+            if (IsInBed && _bedView != null)
+            { position = _bedView.position; rotation = _bedView.rotation; return; }
             position = _riding ? Scooter.Seat.position : transform.position + Vector3.up * 1.65f;
             float yaw = _riding ? Scooter.transform.eulerAngles.y + Mathf.Clamp(_yaw, -85, 85) : _yaw;
             if (_riding) _yaw = Mathf.Clamp(_yaw, -85, 85);
@@ -149,15 +153,41 @@ namespace QuaThangNayDa
             Cursor.lockState = paused ? CursorLockMode.None : CursorLockMode.Locked;
             Cursor.visible = paused;
         }
+        private void OnControllerColliderHit(ControllerColliderHit hit)
+        {
+            var traffic = hit.collider.GetComponentInParent<TrafficVehicle>();
+            if (traffic != null) traffic.WalkingContact(hit);
+        }
+
+        public void TransferToHospital(Transform destination, Transform bikeParking)
+        {
+            IsInBed = false;
+            _controller.enabled = false;
+            _riding = Scooter.Mounted = false;
+            Scooter.SetInput(Vector2.zero, true);
+            if (bikeParking != null)
+            {
+                var body = Scooter.GetComponent<Rigidbody>();
+                body.linearVelocity = body.angularVelocity = Vector3.zero;
+                body.position = bikeParking.position; body.rotation = bikeParking.rotation;
+            }
+            transform.SetPositionAndRotation(destination.position, destination.rotation);
+            _yaw = destination.eulerAngles.y; _pitch = 0; _verticalSpeed = 0; _transitionRemaining = 0;
+            _controller.enabled = true;
+            Physics.SyncTransforms();
+            GetViewTarget(out var position, out var rotation);
+            View.transform.SetPositionAndRotation(position, rotation);
+        }
         public TravelSnapshot CaptureTravel()
         {
             var data = new TravelSnapshot { Position = transform.position, Yaw = _yaw, Pitch = _pitch,
-                VerticalSpeed = _verticalSpeed, Riding = _riding };
+                VerticalSpeed = _verticalSpeed, Riding = _riding, InBed = IsInBed };
             Scooter.CaptureInto(data);
             return data;
         }
         public void RestoreTravel(TravelSnapshot data)
         {
+            IsInBed = false; // MorningSession restores the authored bed pose after loading.
             SetPaused(true); // Loading never lets the world run before the player is ready.
             _controller.enabled = false;
             Scooter.RestoreFrom(data);
@@ -170,6 +200,22 @@ namespace QuaThangNayDa
             Physics.SyncTransforms();
             GetViewTarget(out Vector3 position, out Quaternion rotation);
             View.transform.SetPositionAndRotation(position, rotation);
+        }
+        public void EnterBed(Transform view, Transform exit)
+        {
+            if (view == null || exit == null || _riding) return;
+            _bedView = view; _bedExit = exit;
+            IsInBed = true;
+            _controller.enabled = false;
+            transform.SetPositionAndRotation(view.position, Quaternion.Euler(0, view.eulerAngles.y, 0));
+            _verticalSpeed = 0; _transitionRemaining = 0;
+            View.transform.SetPositionAndRotation(view.position, view.rotation);
+        }
+
+        public void LeaveBed()
+        {
+            if (!IsInBed || _bedExit == null) return;
+            TransferToHospital(_bedExit, null);
         }
         private void OnApplicationFocus(bool focus) { if (!focus) SetPaused(true); }
         private void OnDisable() { Time.timeScale = 1; Cursor.lockState = CursorLockMode.None; Cursor.visible = true; }

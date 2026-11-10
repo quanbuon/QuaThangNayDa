@@ -1,0 +1,265 @@
+{
+  ".vscode/extensions.json": {
+    "mtime": 1793768215.0871577,
+    "seen": 1793860898.0716434,
+    "ast_hash": "a9819ba4d76ccd81cf1f7b18e06c77d0",
+    "semantic_hash": "a9819ba4d76ccd81cf1f7b18e06c77d0",
+    "ast_empty": true
+  },
+  ".vscode/launch.json": {
+    "mtime": 1793768215.0951588,
+    "seen": 1793860898.0716434,
+    "ast_hash": "b939dea735cf9d32842d6a2c44474427",
+    "semantic_hash": "b939dea735cf9d32842d6a2c44474427",
+    "ast_empty": true
+  },
+  ".vscode/settings.json": {
+    "mtime": 1793768215.0941586,
+    "seen": 1793860898.0716434,
+    "ast_hash": "d33f110c40c9295ed5fb11c9785b6ac3",
+    "semantic_hash": "d33f110c40c9295ed5fb11c9785b6ac3",
+    "ast_empty": true
+  },
+  ".vscode/tasks.json": {
+    "mtime": 1793800033.2138999,
+    "seen": 1793860898.0716434,
+    "ast_hash": "daab4b538c940a013cf564e40b1940ec",
+    "semantic_hash": "daab4b538c940a013cf564e40b1940ec",
+    "ast_empty": true
+  },
+  "Assets/TutorialInfo/Editor/ReadmeEditor.cs": {
+    "mtime": 1790865459.0,
+    "seen": 1793860898.0716434,
+    "ast_hash": "5fd3655c2512c35f8d28a3b98386f3f6",
+    "semantic_hash": "5fd3655c2512c35f8d28a3b98386f3f6"
+  },
+  "Assets/TutorialInfo/Readme.cs": {
+    "mtime": 1790865459.0,
+    "seen": 1793860898.0726426,
+    "ast_hash": "82943f24ee8633ce1b631a2e65aa19a9",
+    "semantic_hash": "82943f24ee8633ce1b631a2e65aa19a9"
+  },
+  "Assets/_Project/Scripts/Core/MorningSimulation.cs": {
+    "mtime": 1793797715.6274178,
+    "seen": 1793860898.0726426,
+    "ast_hash": "f285bdaadbad5be9061aefb6473aaa7b",
+    "semantic_hash": "f285bdaadbad5be9061aefb6473aaa7b"
+  },
+  "Assets/_Project/Scripts/Core/MorningSnapshot.cs": {
+    "mtime": 1793797674.6064587,
+    "seen": 1793860898.0726426,
+    "ast_hash": "e7c66026feeea9d77f9c3ea230b3ee7f",
+    "semantic_hash": "e7c66026feeea9d77f9c3ea230b3ee7f"
+  },
+  "Assets/_Project/Scripts/Core/ProjectIdentity.cs": {
+    "mtime": 1793773425.9854784,
+    "seen": 1793860898.073642,
+    "ast_hash": "d8e407b7329102e66a88d7ab1a2933b6",
+    "semantic_hash": "d8e407b7329102e66a88d7ab1a2933b6"
+  },
+  "Assets/_Project/Scripts/Core/ShiftCommitment.cs": {
+    "mtime": 1793797674.6094596,
+    "seen": 1793860898.073642,
+    "ast_hash": "7aec095d6867dfa2a6e9760ec9e813d6",
+    "semantic_hash": "7aec095d6867dfa2a6e9760ec9e813d6"
+  },
+  "Assets/_Project/Scripts/Editor/ActivityTargetingChecks.cs": {
+    "mtime": 1793846894.2818573,
+    "seen": 1793860898.0742733,
+    "ast_hash": "3e192f220a3292d9992f192d18e040a1",
+    "semantic_hash": "3e192f220a3292d9992f192d18e040a1"
+  },
+  "Assets/_Project/Scripts/Editor/ArtDetailTools.cs": {
+    "mtime": 1793846609.015772,
+    "seen": 1793860898.0742733,
+    "ast_hash": "1cd5ec98b4d61aab15a9366cdb089c6f",
+    "semantic_hash": "1cd5ec98b4d61aab15a9366cdb089c6f"
+  },
+  "Assets/_Project/Scripts/Editor/ArtSliceTools.cs": {
+    "mtime": 1793848947.5770264,
+    "seen": 1793860898.0742733,
+    "ast_hash": "6a456a12b66056181bb2d72aaf48586e",
+    "semantic_hash": "6a456a12b66056181bb2d72aaf48586e"
+  },
+  "Assets/_Project/Scripts/Editor/BikeVendorTools.cs": {
+    "mtime": 1793848383.6232274,
+    "seen": 1793860898.075262,
+    "ast_hash": "8d56381cd2ea1b580e080c803eaa602c",
+    "semantic_hash": "8d56381cd2ea1b580e080c803eaa602c"
+  },
+  "Assets/_Project/Scripts/Editor/CafeManagerTools.cs": {
+    "mtime": 1793848947.5760264,
+    "seen": 1793860898.075262,
+    "ast_hash": "3c97dc1e9ae1bd3f9344e21fe9f07b60",
+    "semantic_hash": "3c97dc1e9ae1bd3f9344e21fe9f07b60"
+  },
+  "Assets/_Project/Scripts/Editor/CampusTools.cs": {
+    "mtime": 1793846609.0127733,
+    "seen": 1793860898.075262,
+    "ast_hash": "88a38e26b87c7f50f54dbdc17f83e0a7",
+    "semantic_hash": "88a38e26b87c7f50f54dbdc17f83e0a7"
+  },
+  "Assets/_Project/Scripts/Editor/CommitmentChecks.cs": {
+    "mtime": 1793785348.4486158,
+    "seen": 1793860898.0762634,
+    "ast_hash": "6d447374724b9acfd1611dff5ec22175",
+    "semantic_hash": "6d447374724b9acfd1611dff5ec22175"
+  },
+  "Assets/_Project/Scripts/Editor/FoundationTools.cs": {
+    "mtime": 1793773303.5748384,
+    "seen": 1793860898.0762634,
+    "ast_hash": "95952758184361a104041d24ca3cbc8a",
+    "semantic_hash": "95952758184361a104041d24ca3cbc8a"
+  },
+  "Assets/_Project/Scripts/Editor/MorningChecks.cs": {
+    "mtime": 1793782444.7761116,
+    "seen": 1793860898.0762634,
+    "ast_hash": "74832c2fe91fc8ef3f0aeffb6334330c",
+    "semantic_hash": "74832c2fe91fc8ef3f0aeffb6334330c"
+  },
+  "Assets/_Project/Scripts/Editor/MorningTools.cs": {
+    "mtime": 1793781857.7271948,
+    "seen": 1793860898.0772655,
+    "ast_hash": "2c1e1065c2bd41b7b2caf0351a5aedbf",
+    "semantic_hash": "2c1e1065c2bd41b7b2caf0351a5aedbf"
+  },
+  "Assets/_Project/Scripts/Editor/SaveChecks.cs": {
+    "mtime": 1793797857.5552065,
+    "seen": 1793860898.0772655,
+    "ast_hash": "6bfa6cf7215dfdadd827b07528c0ac48",
+    "semantic_hash": "6bfa6cf7215dfdadd827b07528c0ac48"
+  },
+  "Assets/_Project/Scripts/Editor/SaveTools.cs": {
+    "mtime": 1793797857.557207,
+    "seen": 1793860898.0772655,
+    "ast_hash": "462b6204c1dc2d11adfdeabf3895e6f9",
+    "semantic_hash": "462b6204c1dc2d11adfdeabf3895e6f9"
+  },
+  "Assets/_Project/Scripts/Editor/ScooterPhysicsCheck.cs": {
+    "mtime": 1793780623.0130627,
+    "seen": 1793860898.0782633,
+    "ast_hash": "fb0651a9aedcf55a3e6fc0e48fabe58c",
+    "semantic_hash": "fb0651a9aedcf55a3e6fc0e48fabe58c"
+  },
+  "Assets/_Project/Scripts/Editor/StoryTools.cs": {
+    "mtime": 1793785348.454126,
+    "seen": 1793860898.0782633,
+    "ast_hash": "f4db3fca9cd91633fa80c29735f32552",
+    "semantic_hash": "f4db3fca9cd91633fa80c29735f32552"
+  },
+  "Assets/_Project/Scripts/Editor/StreetBreakfastTools.cs": {
+    "mtime": 1793847486.070111,
+    "seen": 1793860898.0782633,
+    "ast_hash": "fa3f8b480af68ee7b8317f9e24cec5fe",
+    "semantic_hash": "fa3f8b480af68ee7b8317f9e24cec5fe"
+  },
+  "Assets/_Project/Scripts/Editor/TravelTools.cs": {
+    "mtime": 1793780685.6999507,
+    "seen": 1793860898.079276,
+    "ast_hash": "4851727891a154961a83374af80a25ca",
+    "semantic_hash": "4851727891a154961a83374af80a25ca"
+  },
+  "Assets/_Project/Scripts/Runtime/Activities/ActivityStation.cs": {
+    "mtime": 1793781808.871861,
+    "seen": 1793860898.079276,
+    "ast_hash": "b6d6c53ec986bfbddb0946cf8c7437ad",
+    "semantic_hash": "b6d6c53ec986bfbddb0946cf8c7437ad"
+  },
+  "Assets/_Project/Scripts/Runtime/Activities/ActivityTargeting.cs": {
+    "mtime": 1793847486.069124,
+    "seen": 1793860898.079276,
+    "ast_hash": "413e2b85281afe47b0e53d5510ae5fcb",
+    "semantic_hash": "413e2b85281afe47b0e53d5510ae5fcb"
+  },
+  "Assets/_Project/Scripts/Runtime/Activities/MorningConfig.cs": {
+    "mtime": 1793785276.55107,
+    "seen": 1793860898.0802667,
+    "ast_hash": "9585287ab7f97af1bcbc41a56b358782",
+    "semantic_hash": "9585287ab7f97af1bcbc41a56b358782"
+  },
+  "Assets/_Project/Scripts/Runtime/Activities/MorningSession.cs": {
+    "mtime": 1793846894.2808535,
+    "seen": 1793860898.0802667,
+    "ast_hash": "879e15c29c1f5e671a0cb443ec4037f8",
+    "semantic_hash": "879e15c29c1f5e671a0cb443ec4037f8"
+  },
+  "Assets/_Project/Scripts/Runtime/Activities/SaveCoordinator.cs": {
+    "mtime": 1793800023.675899,
+    "seen": 1793860898.0802667,
+    "ast_hash": "f87626cbc14653fb49e87a9e00f57272",
+    "semantic_hash": "f87626cbc14653fb49e87a9e00f57272"
+  },
+  "Assets/_Project/Scripts/Runtime/Bootstrap/FoundationDiagnostics.cs": {
+    "mtime": 1793801938.1574788,
+    "seen": 1793860898.0802667,
+    "ast_hash": "962d0d6b375845cf6acc67a50e43586b",
+    "semantic_hash": "962d0d6b375845cf6acc67a50e43586b"
+  },
+  "Assets/_Project/Scripts/Runtime/Player/TravelController.cs": {
+    "mtime": 1793797779.601237,
+    "seen": 1793860898.081265,
+    "ast_hash": "70c42a5584fe0119c6304f7bef2441bd",
+    "semantic_hash": "70c42a5584fe0119c6304f7bef2441bd"
+  },
+  "Assets/_Project/Scripts/Runtime/Player/TravelInput.cs": {
+    "mtime": 1793780077.2669387,
+    "seen": 1793860898.081265,
+    "ast_hash": "20918e5221d7d3932b6e2b2c8fe4539b",
+    "semantic_hash": "20918e5221d7d3932b6e2b2c8fe4539b"
+  },
+  "Assets/_Project/Scripts/Runtime/Saving/SaveGame.cs": {
+    "mtime": 1793797715.6324158,
+    "seen": 1793860898.081265,
+    "ast_hash": "d426cc0fc999d1185b7f95d76b91b1a2",
+    "semantic_hash": "d426cc0fc999d1185b7f95d76b91b1a2"
+  },
+  "Assets/_Project/Scripts/Runtime/Saving/SaveStore.cs": {
+    "mtime": 1793797715.6334143,
+    "seen": 1793860898.0822651,
+    "ast_hash": "a716aec6a1c040daa0675dce34d13e42",
+    "semantic_hash": "a716aec6a1c040daa0675dce34d13e42"
+  },
+  "Assets/_Project/Scripts/Runtime/UI/StudentPhone.cs": {
+    "mtime": 1793797779.607865,
+    "seen": 1793860898.0822651,
+    "ast_hash": "3c130b23fcab670a7d150fe44844243a",
+    "semantic_hash": "3c130b23fcab670a7d150fe44844243a"
+  },
+  "Assets/_Project/Scripts/Runtime/Vehicles/ArcadeScooter.cs": {
+    "mtime": 1793797779.5960739,
+    "seen": 1793860898.0822651,
+    "ast_hash": "9a9cd90fbe231901c7412cb4072b570e",
+    "semantic_hash": "9a9cd90fbe231901c7412cb4072b570e"
+  },
+  "Packages/manifest.json": {
+    "mtime": 1793801969.93531,
+    "seen": 1793860898.0832653,
+    "ast_hash": "b8e95e5be3345d727ab126b1b3188035",
+    "semantic_hash": "b8e95e5be3345d727ab126b1b3188035"
+  },
+  "Packages/packages-lock.json": {
+    "mtime": 1793844923.6023211,
+    "seen": 1793860898.0832653,
+    "ast_hash": "debda51d37800c10478bc98d50f164b5",
+    "semantic_hash": "debda51d37800c10478bc98d50f164b5"
+  },
+  "ProjectSettings/SceneTemplateSettings.json": {
+    "mtime": 1790865459.0,
+    "seen": 1793860898.0832653,
+    "ast_hash": "eeb26e313b89cd9334b828428a4847ef",
+    "semantic_hash": "eeb26e313b89cd9334b828428a4847ef",
+    "ast_empty": true
+  },
+  "Tools/Build-M0.ps1": {
+    "mtime": 1793773897.339791,
+    "seen": 1793860898.0832653,
+    "ast_hash": "18dd413cfdf0a60717217c8204d923aa",
+    "semantic_hash": "18dd413cfdf0a60717217c8204d923aa"
+  },
+  "Tools/Build-M1.ps1": {
+    "mtime": 1793848947.5780275,
+    "seen": 1793860898.0832653,
+    "ast_hash": "a211195164c78b1ac619e663df02d94d",
+    "semantic_hash": "a211195164c78b1ac619e663df02d94d"
+  }
+}

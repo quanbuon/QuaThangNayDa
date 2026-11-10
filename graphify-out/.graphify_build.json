@@ -1,0 +1,1 @@
+{"excludes": ["Repo/**", "Library/**", "Temp/**", "Logs/**", "obj/**", ".vs/**", "UserSettings/**", "graphify-out/**", ".m0-validation/**", "Build/**", "Builds/**"], "code_only": true}

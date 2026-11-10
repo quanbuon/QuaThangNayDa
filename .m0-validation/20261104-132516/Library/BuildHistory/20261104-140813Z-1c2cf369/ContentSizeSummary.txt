@@ -1,0 +1,34 @@
+-------------------------------------------------------------------------------
+Build Report - Content Size Statistics
+Serialized File count                      3
+Resource file count                        2
+Object count                            2506
+Serialized Files                       1.2 mb	  24.2%
+Serialized Files Headers              76.9 kb	   1.5%
+Resource data (Texture,Audio...)       3.9 mb	  75.8%
+Total build size                       5.1 mb
+
+Largest Types:
+     3.4 mb	  66.2% Texture2D
+   764.6 kb	  14.6% Shader
+   512.2 kb	   9.8% Cubemap
+   159.3 kb	   3.0% MonoScript
+   127.5 kb	   2.4% ComputeShader
+
+Largest Assets:
+   524.9 kb	  10.0% Resources/unity_builtin_extra
+   262.6 kb	   5.0% Packages/com.unity.render-pipelines.universal/Textures/SMAA/AreaTex.tga
+   117.2 kb	   2.2% Packages/com.unity.render-pipelines.universal/Shaders/Lit.shader
+    89.4 kb	   1.7% Assets/_Project/Scenes/CampusMorning.unity
+    72.1 kb	   1.4% Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrass.shader
+    70.0 kb	   1.3% Packages/com.unity.render-pipelines.universal/Shaders/Utils/CoreBlit.shader
+    68.3 kb	   1.3% Packages/com.unity.render-pipelines.core/Runtime/Vrs/Shaders/VrsTexture.compute
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_5.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_6.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_1.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_2.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_0.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_4.png
+    64.2 kb	   1.2% Packages/com.unity.render-pipelines.universal/Textures/BlueNoise256/LDR_LLL1_3.png
+    54.9 kb	   1.0% Packages/com.unity.render-pipelines.universal/Shaders/Utils/ScreenSpaceAmbientOcclusion.shader
+-------------------------------------------------------------------------------

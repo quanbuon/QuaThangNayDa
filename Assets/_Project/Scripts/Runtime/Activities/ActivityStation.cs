@@ -7,5 +7,6 @@ namespace QuaThangNayDa
     {
         public MorningActivity Activity;
         public string Label;
+        public bool HospitalReception;
     }
 }

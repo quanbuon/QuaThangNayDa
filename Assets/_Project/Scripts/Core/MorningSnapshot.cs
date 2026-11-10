@@ -6,6 +6,10 @@ namespace QuaThangNayDa.Core
     public sealed class MorningSnapshot
     {
         public MorningRules Rules;
+        public HospitalRules HospitalRules;
+        public bool Hospitalized;
+        public int TreatmentRemaining, MedicalDebt, HospitalTimeLimit, HospitalTreatmentMinutes;
+        public double HospitalDischargeHealth;
         public int Minute, Money, ClassMinutes, WorkMinutes, Remaining;
         public double Health, Energy, Learning, Relations;
         public MorningActivity Activity;

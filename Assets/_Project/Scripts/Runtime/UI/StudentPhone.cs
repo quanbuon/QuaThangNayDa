@@ -66,7 +66,8 @@ namespace QuaThangNayDa
             float height = Mathf.Max(180, Screen.height - 125);
             GUILayout.BeginArea(new Rect((Screen.width - width) / 2, 110, width, height), GUI.skin.window);
             GUILayout.Label("DIEN THOAI  |  " + Clock(sim.Minute), _wrapped);
-            GUILayout.Label(sim.StoryPending ? "TIN QUAN TRONG - DONG HO DANG DUNG" : sim.Paused ? "GAME DANG TAM DUNG" : "Dong ho van chay khi doc tin thuong", _wrapped);
+            GUILayout.Label($"Tien: {sim.Money:N0}d | NO VIEN PHI: {sim.MedicalDebt:N0}d", _wrapped);
+            GUILayout.Label(sim.StoryPending ? "TIN QUAN TRONG - DONG HO DANG DUNG" : sim.Hospitalized ? "DANG NAM VIEN - DONG HO DANG DUNG" : sim.Paused ? "GAME DANG TAM DUNG" : "Dong ho van chay khi doc tin thuong", _wrapped);
             GUI.enabled = !Session.Player.IsPaused;
             if (!sim.StoryPending && GUILayout.Button("DONG DIEN THOAI (P)")) IsOpen = false;
             _scroll = GUILayout.BeginScrollView(_scroll);

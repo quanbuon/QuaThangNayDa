@@ -9,12 +9,15 @@ namespace QuaThangNayDa
     public sealed class SaveCoordinator : MonoBehaviour
     {
         public MorningSession Session;
+        public bool UseArtPreviewSlots;
+        public bool UseTrafficSlots;
         private SaveStore _store;
         private int _savedJournal = -1, _savedMinute = -1, _pendingSlot = -1;
         private bool _pendingLoad;
         private float _nextAutoAttempt;
         private string _status = "";
-        private void Awake() => _store = new SaveStore(Path.Combine(Application.persistentDataPath, "Saves-v1"));
+        private void Awake() => _store = new SaveStore(Path.Combine(Application.persistentDataPath,
+            UseTrafficSlots ? "Saves-traffic-v1" : UseArtPreviewSlots ? "Saves-art-preview-v1" : "Saves-v1"));
         private void LateUpdate()
         {
             var sim = Session.Simulation;

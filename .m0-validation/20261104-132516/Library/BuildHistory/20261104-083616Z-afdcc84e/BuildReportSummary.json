@@ -1,0 +1,34 @@
+{
+    "Version": 2,
+    "BuildContentOptions": [
+        "None"
+    ],
+    "BuildManifestHash": "00000000000000000000000000000000",
+    "BuildName": "QuaThangNayda",
+    "BuildOptions": [
+        "ForceOptimizeScriptCompilation",
+        "Il2CPP",
+        "CompressTextures",
+        "StripDebugSymbols",
+        "ShaderLivelinkSupport",
+        "Development",
+        "AllowDebugging"
+    ],
+    "BuildProfilePath": "",
+    "BuildResult": 1,
+    "BuildResultName": "Succeeded",
+    "BuildSessionGUID": "afdcc84e5a9a2fe4b9bc859c5458dc71",
+    "BuildStartedAt": "2026-11-04T08:36:16.6214634Z",
+    "BuildType": 1,
+    "BuildTypeName": "Player",
+    "ContentSourceBuildSessionGUID": "5afc49074861dbd4a97074dd2ec3ccce",
+    "OutputPath": "E:/Unity/QuaThangNayda/Build/Windows-M1/QuaThangNayDa-M1.exe",
+    "Platform": 19,
+    "PlatformName": "StandaloneWindows64",
+    "Subtarget": 2,
+    "SubtargetName": "Player",
+    "TotalErrors": 0,
+    "TotalSizeBytes": 172792962,
+    "TotalTimeMs": 32451,
+    "TotalWarnings": 0
+}

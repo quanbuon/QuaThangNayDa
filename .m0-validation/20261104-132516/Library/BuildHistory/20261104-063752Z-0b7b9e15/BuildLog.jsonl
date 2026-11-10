@@ -1,0 +1,60 @@
+{"timestamp":"2026-11-04T06:37:52.951452400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Call internal build started callbacks\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:37:52.956807200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Call internal build started callbacks\",\"depth\":1,\"durationTicks\":70448}"}
+{"timestamp":"2026-11-04T06:37:53.015467400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Preprocess Player\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:37:53.434508400Z","thread_id":"25532","log_level":"Info","message":"1 URP assets included in build\r\n- PC_RPAsset - Assets/Settings/PC_RPAsset.asset\r\n\t - PC_Renderer - Assets/Settings/PC_Renderer.asset - UnityEngine.Rendering.Universal.UniversalRendererData\r\n"}
+{"timestamp":"2026-11-04T06:37:53.645088800Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Preprocess Player\",\"depth\":1,\"durationTicks\":6296477}"}
+{"timestamp":"2026-11-04T06:37:53.645113800Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Save scenes before build\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:37:53.647837400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Save scenes before build\",\"depth\":1,\"durationTicks\":27064}"}
+{"timestamp":"2026-11-04T06:37:53.920211000Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Prepare For Build\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:37:53.944289500Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Prepare For Build\",\"depth\":1,\"durationTicks\":241004}"}
+{"timestamp":"2026-11-04T06:37:53.944375100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"ProducePlayerScriptAssemblies\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:38:05.827776400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Prebuild Cleanup and Recompile\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:38:05.863413300Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Compile scripts\",\"depth\":3}"}
+{"timestamp":"2026-11-04T06:39:43.285308200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Compile scripts\",\"depth\":3,\"durationTicks\":974218789}"}
+{"timestamp":"2026-11-04T06:39:43.285326700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Generate and validate platform script types\",\"depth\":3}"}
+{"timestamp":"2026-11-04T06:39:43.357132000Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Generate and validate platform script types\",\"depth\":3,\"durationTicks\":717583}"}
+{"timestamp":"2026-11-04T06:39:43.357143100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Prebuild Cleanup and Recompile\",\"depth\":2,\"durationTicks\":975294285}"}
+{"timestamp":"2026-11-04T06:39:43.360452100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"ProducePlayerScriptAssemblies\",\"depth\":1,\"durationTicks\":1094160623}"}
+{"timestamp":"2026-11-04T06:39:43.360716600Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Verify Build setup\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:43.431603200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"GetUnityAssemblies\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:39:43.916048200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"GetUnityAssemblies\",\"depth\":2,\"durationTicks\":4844557}"}
+{"timestamp":"2026-11-04T06:39:43.916106800Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"GetPlayerAssemblies\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:39:43.949397700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"GetPlayerAssemblies\",\"depth\":2,\"durationTicks\":332983}"}
+{"timestamp":"2026-11-04T06:39:43.949811400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Check old data build\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:39:43.951290800Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Check old data build\",\"depth\":2,\"durationTicks\":14811}"}
+{"timestamp":"2026-11-04T06:39:43.951711400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Verify Build setup\",\"depth\":1,\"durationTicks\":5909939}"}
+{"timestamp":"2026-11-04T06:39:43.951977400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Prepare assets for target platform\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:43.967464600Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Prepare assets for target platform\",\"depth\":1,\"durationTicks\":154903}"}
+{"timestamp":"2026-11-04T06:39:43.967486400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Prepare splash screen\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:44.043154100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Prepare splash screen\",\"depth\":1,\"durationTicks\":756481}"}
+{"timestamp":"2026-11-04T06:39:44.053956500Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Build scripts DLLs\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:44.057735900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"GetSystemAssemblies\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:39:44.071986900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"GetSystemAssemblies\",\"depth\":2,\"durationTicks\":142752}"}
+{"timestamp":"2026-11-04T06:39:44.270746800Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Build scripts DLLs\",\"depth\":1,\"durationTicks\":2168124}"}
+{"timestamp":"2026-11-04T06:39:44.630527900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Building scenes\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:44.630686200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Building scene Assets/_Project/Scenes/Bootstrap.unity\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:39:44.930031000Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Building scene Assets/_Project/Scenes/Bootstrap.unity\",\"depth\":2,\"durationTicks\":2993297}"}
+{"timestamp":"2026-11-04T06:39:44.930156700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Building scenes\",\"depth\":1,\"durationTicks\":2995520}"}
+{"timestamp":"2026-11-04T06:39:45.061944400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Build GlobalGameManagers file\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:45.698538700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Build GlobalGameManagers file\",\"depth\":1,\"durationTicks\":6366248}"}
+{"timestamp":"2026-11-04T06:39:45.808956600Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Writing asset files\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:39:45.809555600Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Packaging assets - globalgamemanagers.assets\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:41:16.054312100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Packaging assets - globalgamemanagers.assets\",\"depth\":2,\"durationTicks\":902447576}"}
+{"timestamp":"2026-11-04T06:41:16.054346500Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Packaging assets - sharedassets0.assets\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:42:27.843982900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Packaging assets - sharedassets0.assets = additional assets for scene 0: Assets/_Project/Scenes/Bootstrap.unity\",\"depth\":2,\"durationTicks\":717896220}"}
+{"timestamp":"2026-11-04T06:42:27.863920600Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Writing asset files\",\"depth\":1,\"durationTicks\":1620549634}"}
+{"timestamp":"2026-11-04T06:42:27.863948400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Building Resources/unity_builtin_extra\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:42:39.968513100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Building Resources/unity_builtin_extra\",\"depth\":1,\"durationTicks\":121045522}"}
+{"timestamp":"2026-11-04T06:42:39.970270100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Write data build dirty tracking information\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:42:40.287531700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Write data build dirty tracking information\",\"depth\":1,\"durationTicks\":3172675}"}
+{"timestamp":"2026-11-04T06:42:40.317153900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Postprocess built player\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:42:40.341587900Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Setup incremental player build\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:42:40.601028200Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Setup incremental player build\",\"depth\":2,\"durationTicks\":2594377}"}
+{"timestamp":"2026-11-04T06:42:40.601064100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Incremental player build\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:44:12.991530400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Incremental player build\",\"depth\":2,\"durationTicks\":923904416}"}
+{"timestamp":"2026-11-04T06:44:13.011478300Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Report output files\",\"depth\":2}"}
+{"timestamp":"2026-11-04T06:44:13.108705300Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Report output files\",\"depth\":2,\"durationTicks\":972394}"}
+{"timestamp":"2026-11-04T06:44:13.116188500Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Postprocess built player\",\"depth\":1,\"durationTicks\":927990662}"}
+{"timestamp":"2026-11-04T06:44:13.342278100Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepStart\",\"stepName\":\"Call Post-Process callbacks\",\"depth\":1}"}
+{"timestamp":"2026-11-04T06:44:13.947697400Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Call Post-Process callbacks\",\"depth\":1,\"durationTicks\":6054212}"}
+{"timestamp":"2026-11-04T06:44:13.947723700Z","thread_id":"25532","log_level":"Info","message":"{\"type\":\"StepEnd\",\"stepName\":\"Build player\",\"depth\":0,\"durationTicks\":3811598650}"}

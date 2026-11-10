@@ -1,4 +1,7 @@
-# Hướng mỹ thuật — chờ duyệt
+# Hướng mỹ thuật — đã duyệt bảng tham khảo
+
+Người dùng đã duyệt concept ngày 2026-11-04. Bắt đầu bằng phòng trọ và mặt tiền quán cà phê;
+đây không phải nghiệm thu hình ảnh trong bản chạy hoặc cam kết đạt độ chi tiết của concept.
 
 Stylized bán hiện thực; chi tiết vừa, nhân vật tỉ lệ gần thật và mặt đơn giản;
 phong cách thống nhất giữa môi trường, người và xe. Nắng sáng ấm, cây xanh,
@@ -18,7 +21,7 @@ Bảng concept sáu ô đã được tạo bằng công cụ ImageGen tích hợ
 | SCOOTER | Xe không nhãn hiệu, góc nhìn tay lái thoáng |
 | MORNING LIGHT | Nắng ấm, bóng mềm vừa, nền kem/xám, xanh cây và cam tiết chế |
 
-Trước khi sản xuất scene chính thức cần duyệt mức stylization, màu, nhân vật và ánh sáng.
+M5 dựng khu mẫu riêng để tiếp tục kiểm tra bố cục, màu và ánh sáng trong bản chạy.
 M0 không nhập asset bên ngoài vào Unity. Model ZIP chưa đủ nguồn/giấy phép sẽ không sử dụng.
 
 Prompt định hướng: sáu ô STREET/ROOM/CAFE/CHARACTERS/SCOOTER/MORNING LIGHT;

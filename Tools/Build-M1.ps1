@@ -1,5 +1,5 @@
 param([string]$UnityPath = 'C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe',
-    [ValidateSet('M1','M2','M3','M4')][string]$Milestone = 'M1')
+    [ValidateSet('M1','M2','M3','M4','M5','M6')][string]$Milestone = 'M1')
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 # Reuse only the generated validation cache, never the open working project.
@@ -18,7 +18,7 @@ $logDirectory = Join-Path $projectRoot "Logs/$Milestone"
 New-Item -ItemType Directory -Path $logDirectory -Force | Out-Null
 $logPath = Join-Path $logDirectory ('build-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.log')
 Write-Host "$Milestone build log: $logPath"
-$buildClass = if ($Milestone -eq 'M4') { 'SaveTools' } elseif ($Milestone -eq 'M3') { 'StoryTools' } elseif ($Milestone -eq 'M2') { 'MorningTools' } else { 'TravelTools' }
+$buildClass = if ($Milestone -eq 'M6') { 'TrafficHospitalTools' } elseif ($Milestone -eq 'M5') { 'ArtSliceTools' } elseif ($Milestone -eq 'M4') { 'SaveTools' } elseif ($Milestone -eq 'M3') { 'StoryTools' } elseif ($Milestone -eq 'M2') { 'MorningTools' } else { 'TravelTools' }
 $arguments = @('-batchmode','-nographics','-quit','-projectPath', ('"' + $stagePath + '"'),
     '-buildTarget','Win64','-executeMethod',"QuaThangNayDa.Editor.$buildClass.BuildBatch",
     "-$($Milestone.ToLower())-build-output", ('"' + $buildPath + '"'), '-logFile', ('"' + $logPath + '"'))
@@ -30,6 +30,14 @@ $generated = @('Scenes/TravelTest.unity','Art/Materials/M1Road.mat','Art/Materia
 if ($Milestone -eq 'M2') { $generated += @('Scenes/MorningTest.unity','Data/MorningConfig.asset') }
 if ($Milestone -eq 'M3') { $generated += @('Scenes/StoryMorning.unity','Data/StoryMorningConfig.asset') }
 if ($Milestone -eq 'M4') { $generated += @('Scenes/SavedMorning.unity') }
+if ($Milestone -eq 'M6') {
+    $generated += @('Scenes/MainMorning.unity')
+    $generated += Get-ChildItem -LiteralPath "$stagePath/Assets/_Project/Art/Materials" -Filter 'M5*.mat' | ForEach-Object { "Art/Materials/$($_.Name)" }
+}
+if ($Milestone -eq 'M5') {
+    $generated += @('Scenes/ArtMorning.unity','Scenes/ArtMorningDetail.unity','Scenes/CampusMorning.unity','Scenes/StreetMorning.unity','Scenes/BikeVendorMorning.unity','Scenes/CafeManagerMorning.unity')
+    $generated += Get-ChildItem -LiteralPath "$stagePath/Assets/_Project/Art/Materials" -Filter 'M5*.mat' | ForEach-Object { "Art/Materials/$($_.Name)" }
+}
 foreach ($relative in $generated) {
     foreach ($suffix in @('.meta','')) {
         $target = Join-Path $projectRoot "Assets/_Project/$relative$suffix"

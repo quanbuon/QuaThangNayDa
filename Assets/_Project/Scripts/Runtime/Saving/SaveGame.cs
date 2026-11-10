@@ -9,7 +9,7 @@ namespace QuaThangNayDa
     {
         public Vector3 Position;
         public float Yaw, Pitch, VerticalSpeed;
-        public bool Riding;
+        public bool Riding, InBed;
         public Vector3 ScooterPosition, ScooterVelocity, ScooterAngularVelocity;
         public Quaternion ScooterRotation;
         public int CollisionCount;
@@ -26,7 +26,9 @@ namespace QuaThangNayDa
         public TravelSnapshot Travel;
         public float MinuteFraction, RealSecondsPerMinute;
         public bool Started;
+        public bool BedSleeping;
         public int ReadMessages;
+        public float HospitalProtection;
 
         public void Validate()
         {
@@ -41,7 +43,11 @@ namespace QuaThangNayDa
                 !Finite(RealSecondsPerMinute) || RealSecondsPerMinute < 0.1f || RealSecondsPerMinute > 3600 ||
                 !Finite(Travel.CollisionCooldown) || Travel.CollisionCooldown < 0 || Travel.CollisionCooldown > 2.01f ||
                 Travel.CollisionCount < 0 || ReadMessages < 0 || ReadMessages > Simulation.Journal.Length ||
-                (Travel.Riding && sim.Activity != MorningActivity.None))
+                !Finite(HospitalProtection) || HospitalProtection < 0 || HospitalProtection > 60 ||
+                (BedSleeping && (!Started || !Travel.InBed || sim.Hospitalized)) ||
+                (Travel.InBed && (Travel.Riding ||
+                    (sim.Activity != MorningActivity.None && sim.Activity != MorningActivity.Rest))) ||
+                (Travel.Riding && (sim.Activity != MorningActivity.None || sim.Hospitalized)))
                 throw new ArgumentException("Invalid world snapshot.");
             var q = Travel.ScooterRotation;
             float norm = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
